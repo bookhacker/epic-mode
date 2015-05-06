@@ -1,0 +1,114 @@
+p.toctext {
+}
+
+p.w2e_Autor {
+    margin-top:1em;
+    margin-bottom:0em;
+    text-align:center;
+    font-size:1.2em;
+}
+
+p.w2e_Titel {
+    text-align:center;
+    font-size:1.6em;
+    margin:0em;
+}
+
+p.w2e_Untertitel {
+    text-align:center;
+    font-size:1.2em;
+    margin:0em;
+}
+
+p.w2e_Episoda {
+    text-align:center;
+    font-size:1em;
+}
+
+p.w2e_Verlag {
+    text-align:center;
+    font-size:1.2em;
+    margin-top:50;
+}
+
+p.w2e_Impressum {
+    text-indent:0em;
+    margin:0em;
+    margin-top:1em;
+}
+
+p.w2e_5f_Impressum_5f_FirstParagraph {
+    text-indent:0em;
+    margin:0em;
+}
+
+h.Heading_20_2 {
+    text-align:center;
+    font-size:1.4em;
+}
+
+h2.centered {
+    text-align:center;
+    margin-top:1em;
+}
+
+p.w2e_Standard {
+    text-indent:-1em;
+    padding-left:1em;
+    margin:0em;
+}
+
+p.w2e_Schauplatz {
+    text-align:center;
+    font-size:1.2em;
+    margin-top:1em;
+    margin-bottom:0;
+}
+
+p.w2e_Personen {
+    text-align:center;
+    margin-top:0em;
+    margin-bottom:1em;
+}
+
+p.w2e_Personen_Standalone {
+    text-align:center;
+    margin-top:1em;
+    margin-bottom:1em;
+}
+
+p.w2e_Personae {
+}
+
+
+.w2e_Kursiv {
+    font-style:italic;
+}
+
+p.text_align_center {
+    text-align:center;
+}
+
+.footnote_OLD {
+    border-top: 0.5px;
+    border-top-style: solid;
+    border-top-color: black;
+    padding-top:1em;
+    width: 60%;
+    font-size: .90em;
+    margin-left:1em;
+    text-indent:-1.5em;
+    text-align: justify;
+}
+
+p.fnparagraph {
+    text-indent:0em;
+}
+
+.footnote {
+    margin-top:1em;
+}
+
+ul {
+    list-style-type: none;
+}
