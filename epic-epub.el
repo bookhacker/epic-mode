@@ -165,66 +165,6 @@
 
 ;;; --------------------------------------------------------
 ;;;
-(defun epub-create-content-opf_original ()
-  "Creates content.opf in directory OEBPS."  
-  (setq filename "content.opf")
-  (with-current-buffer (get-buffer-create content-opf-buffer-name)
-    (insert (concat "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
-<package version=\"2.0\" xmlns=\"http://www.idpf.org/2007/opf\" unique-identifier=\"" opf-book-id "\">
-  <metadata xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:opf=\"http://www.idpf.org/2007/opf\">
-    <dc:title>" (get-title) "</dc:title>
-    <dc:language>" opf-language "</dc:language>
-    <dc:identifier id=\"" opf-book-id "\" opf:scheme=\"uuid\">urn:uuid:" guid "</dc:identifier>
-    <dc:creator opf:role=\"aut\">" author "</dc:creator>
-    <dc:publisher>" publisher "</dc:publisher>
-    <dc:date>" date "</dc:date>
-    <meta name=\"cover\" content=\"" opf-cover-id "\" />
-    <dc:description>" opf-description "</dc:description>
-    <dc:subject>" opf-subject1 "</dc:subject>
-    <dc:subject>" opf-subject2 "</dc:subject>
-    <dc:subject>" opf-subject3 "</dc:subject>
-    <dc:rights>" opf-rights "</dc:rights>
-    <dc:type>Text</dc:type>
-    <dc:source>" opf-source "</dc:source>
-    <dc:relation>" opf-relation "</dc:relation>
-    <dc:coverage>Worldwide</dc:coverage>
-  </metadata>
-  <manifest>
-    <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />
-    <item href=\"content/toc.html\" id=\"htmltoc\" media-type=\"application/xhtml+xml\" />\n"))
-    ;; insert manifest entries
-    (setq number-of-html-chapter-files (- html-file-index 1))
-    (setq chapter-index 1)
-    (while (<= chapter-index number-of-html-chapter-files)
-      (setq file-name (concat (file-name-as-directory "content") (number-to-string chapter-index) ".html"))
-      (setq file-id (concat "htmlcontent" (number-to-string chapter-index)))
-      (insert (concat "    <item href=\"" file-name "\" id=\"" file-id "\" media-type=\"application/xhtml+xml\" />\n"))
-      (setq chapter-index (+ chapter-index 1)))
-    (insert "    <item href=\"content/footnotes.html\" id=\"footnotes.html\" media-type=\"application/xhtml+xml\" />\n")
-    (insert "    <item href=\"css/styles.css\" id=\"cssstylesheet\" media-type=\"text/css\" />
-  </manifest>
-  <spine toc=\"ncx\">
-    <itemref idref=\"htmltoc\" />\n")
-    ;; insert spine entries
-    (setq chapter-index 1)
-    (while (<= chapter-index number-of-html-chapter-files)
-      (insert (concat "    <itemref idref=\"htmlcontent" (number-to-string chapter-index) "\" />\n"))
-      (setq chapter-index (+ chapter-index 1)))
-    (insert (concat "    <itemref idref=\"footnotes.html\" linear=\"no\"/>\n"))
-    (insert "  </spine>
-  <guide>
-    <reference href=\"content/toc.html\" type=\"toc\" title=\"Inhaltsverzeichnis\" />
-    <!-- ToDo -->
-    <reference href=\"content/3.html\" type=\"text\" title=\"Prooimion\" />    
-    <!-- For Kindle, the eBook opens to this HTML file when the user first opens the eBook -->
-  </guide>
-</package>")
-    (setq content-opf-file-name (concat (file-name-as-directory epub-oebps-directory) "content.opf"))
-    (write-file content-opf-file-name nil)
-    (kill-buffer (current-buffer))))
-
-;;; --------------------------------------------------------
-;;;
 (defun epub-create-toc-ncx ()
   "Creates toc.ncx."
   (with-current-buffer (get-buffer-create toc-ncx-buffer-name)
