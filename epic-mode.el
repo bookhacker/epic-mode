@@ -38,7 +38,6 @@
 (defconst personae-file-name                       "personae")
 (defconst impressum-file-name                      "impressum")
 (defconst werbung-file-name                        "werbung.html")
-;;(defconst cover-file-name                          "cover_intern.html")
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -217,12 +216,7 @@
 	(setq current-on-enter-function 'heading-chapter-on-enter-function)
       (if (< (current-column) position-of-delimiter)
 	  (setq current-on-enter-function 'heading-chapter-on-enter-function)
-	(setq current-on-enter-function 'heading-on-enter-function))))
-;;  (setq last-char "")
-;;  (setq uppercase-input t)
-;;  (when (eq show-current-output-function t)
-;;    (display-current-output-function))
-  )
+	(setq current-on-enter-function 'heading-on-enter-function)))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -299,28 +293,12 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun person-on-enter-function-ORIGINAL ()
-  "Handles person on enter."
-  (when (eq (char-before) 32)
-    (delete-backward-char 1))
-  (insert "\n")
-  (deinitialize-template))
-
-;;; ---------------------------------------------------------
-;;;
 (defun set-person-template ()
   "Sets and initializes person template."
   (setq selected-template         person-template)
   (setq current-output-function   'person-output-function)
   (setq current-on-enter-function 'person-on-enter-function)
-  (setq uppercase-input            nil)
-;;  (beginning-of-line)
-  ;; (unless (equal last-selected-template location-template)
-  ;;   (insert person-template-marker "\n"))
-;;  (end-of-line)
-;;  (when (eq show-current-output-function t)
-;;    (display-current-output-function))
-  )
+  (setq uppercase-input            nil))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -366,16 +344,6 @@
 	(set-standard-template))
     (insert "\n" indentation)))
 
-;;   (if (eq last-char 13)
-;;       (progn
-;; 	(delete-backward-char 3)
-;; 	(insert "\n")
-;; 	(deinitialize-template))
-;; ;;    (insert "\n  "))
-;;     (insert "\n" indentation))
-;; ;;  (setq last-char 13)
-;;)
-
 ;;; ---------------------------------------------------------
 ;;;
 (defun standard-person-on-enter-function ()
@@ -411,15 +379,7 @@
 	  (setq current-on-enter-function 'standard-person-braces-on-enter-function)
 	(setq current-on-enter-function 'standard-person-on-enter-function))))
   (when (= (current-column) 0)
-    (setq uppercase-input t))
-  ;; (beginning-of-line)
-  ;; (when
-  ;;     (or
-  ;;      (= last-selected-template person-template)
-  ;;      (= last-selected-template wiki-template))
-  ;;   (insert standard-template-marker "\n"))
-  ;; (end-of-line)
-)
+    (setq uppercase-input t)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -724,19 +684,7 @@
      (t
       (newline))))
    (t
-    (newline)))
-;;)
-
-    ;; (setq current-column-before (current-column))
-    ;; (if (= (current-column) (length indentation))
-    ;; 	(delete-backward-char (current-column))
-    ;;   (newline)
-    ;;   (unless (= current-column-before 0)
-    ;; 	(insert indentation))
-      ;;(setq previous-input 13)
-  ;;    ))
-)
-;;)
+    (newline))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -963,11 +911,7 @@
 		    persons-standalone-style
 		  persons-style))
 	       ((= lines-forward 2)
-		location-style)
-	        ;; ((= lines-forward 3)
-	        ;; 	heading-style)
-)
-))))))))
+		location-style))))))))))
 
 ;;; --------------------------------------------------------
 ;;;
@@ -996,14 +940,7 @@
        (eq this-command 'undo))
     (initialize-template)
     (when display-selected-style
-      (display-selected-style))
-    ;;    (initialize-selected-style)
-    ;;    (get-current-line-template)
-;    (when (eq display-selected-style t)
- ;     (display-selected-style))
-    ;;    (when (eq show-current-output-function t)
-    ;;      (display-current-output-function))))
-    ))
+      (display-selected-style))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -1028,17 +965,14 @@
 ;;;
 (defun load-book-information ()
   "Initializes book-information from config-file."
-;;  (setq epic-configuration-file (concat "." (file-name-base)))
   (setq epic-configuration-file (get-epos-configuration-file-name))
-
-
   (when (file-exists-p epic-configuration-file)
     (load-file epic-configuration-file)))
 
 ;;; ---------------------------------------------------------
 ;;;
 (define-minor-mode epic-mode
-  "Official mode for writing an episodes."
+  "Mode for writing epic stories."
   :lighter " epic-mode"
   :keymap '(((kbd [127]) . (lambda () (interactive) (on-backspace)))
 	    ((kbd "\r") .  (lambda () (interactive) (on-enter))))
