@@ -1,0 +1,348 @@
+
+epic-createspace.el,120
+(defconst createspace-template-file-name 1,0
+(defun create-createspace-header 5,164
+(defun createspace-create 27,872
+
+epic-epub.el,1153
+(defconst content-opf-buffer-name 1,0
+(defconst toc-ncx-buffer-name 2,66
+(defconst opf-book-id 3,128
+(defconst opf-cover-id 4,182
+(defvar   epub-meta-inf-directory 5,241
+(defvar   epub-oebps-directory 6,289
+(defvar   epub-oebps-content-directory 7,337
+(defvar   epub-oebps-css-directory 8,385
+(defvar   epub-file-name 9,433
+(defvar   epub-delete-files-and-directories 10,481
+(defvar   epub-has-second-level 12,577
+(defvar   epub-is-new-second-level 13,685
+(defvar   navpoint-index 14,786
+(defun epub-delete-files-and-directories 18,899
+(defun epub-create 26,1183
+(defun debug-epub-create 51,1702
+(defun epub-validate 57,1829
+(defun epub-create-directories 66,2097
+(defun epub-create-mimetype-file 87,3062
+(defun epub-create-container-xml-file 96,3376
+(defun epub-create-content-opf 105,3818
+(defun epub-create-content-opf_original 178,7845
+(defun epub-create-toc-ncx 238,11032
+(defun epub-close-toc-ncx 324,14518
+(defun epub-create-toc-ncx-ORIGINAL 352,15613
+(defun epub-insert-into-toc-ncx-first-level 430,18876
+(defun epub-create-style-css 464,20575
+(defun epub-create-files 472,20956
+(defun epub-compress-files 487,21333
+
+epic-general-functions.el,91
+(defun get-guid 3,65
+(defun is-lowercase-letter 9,227
+(defun is-uppercase-letter 28,624
+
+epic-html.el,2455
+(defconst html-author-paragraph-prefix 1,0
+(defconst html-title-paragraph-prefix 2,78
+(defconst html-subtitle-paragraph-prefix 3,156
+(defconst html-episoda-paragraph-prefix 4,239
+(defconst html-publisher-paragraph-prefix 5,319
+(defconst html-legal-notice-paragraph-prefix 6,398
+(defconst html-heading-paragraph-prefix 7,480
+(defconst html-standard-paragraph-prefix 8,558
+(defconst html-standard-paragraph-continued-prefix 9,639
+(defconst html-insertion-paragraph-prefix 10,733
+(defconst html-location-paragraph-prefix 11,814
+(defconst html-person-paragraph-prefix 12,897
+(defconst html-person-standalone-paragraph-prefix 13,978
+(defconst html-personae-standard-paragraph-prefix 14,1070
+(defconst html-paragraph-postfix 15,1151
+(defconst html-heading-postfix 16,1210
+(defconst html-line-break 17,1270
+(defconst html-italics-prefix 18,1330
+(defconst html-italics-postfix 19,1388
+(defconst html-footnote-prefix 20,1447
+(defconst html-footnote-postfix 21,1649
+(defconst html-buffer-name 22,1742
+(defconst html-toc-heading 23,1808
+(defconst html-footnotes-buffer-name 24,1896
+(defconst html-footnotes-file-name 25,1965
+(defvar   html-file-index 26,2034
+(defvar   headings-collected 28,2205
+(defvar   last-style 29,2304
+(defconst personae-buffer 30,2360
+(defconst impressum-buffer 31,2430
+(defconst fnreturn-prefix 32,2501
+(defvar   has-second-level 33,2595
+(defvar   is-new-second-level 34,2710
+(defun get-title 38,2884
+(defun create-html-header 50,3337
+(defun create-html-footer 67,3871
+(defun html-apply-italics 74,4022
+(defun html-apply-style 97,4826
+(defun html-insert-line 146,7093
+(defun html-person-template-get-formatted-line 153,7327
+(defun create-toc-html 207,9609
+(defun create-new-file 216,9897
+(defun close-old-file 224,10185
+(defun insert-into-toc-html 242,10940
+(defun insert-into-toc-html-first-level 253,11511
+(defun insert-into-toc-html-second-level 268,12246
+(defun html-apply-footnotes 283,13049
+(defun create-personae-page 318,14888
+(defun create-legal-notice-page 347,16143
+(defun create-cover-page 374,17372
+(defun create-werbung-page 381,17649
+(defun html-insert-fnreturn 388,17934
+(defun get-location-first-part 406,18551
+(defun iterate-epos-buffer 421,19110
+(defun write-toc-html 464,20860
+(defun clean-up-headings-collected 475,21256
+(defun write-footnotes-html 481,21507
+(defun iterate-html-buffer 492,22024
+(defun create-title-page 507,22408
+(defun create-html 531,23613
+
+epic-import.el,2841
+(defconst heading-marker 14,314
+(defconst paragraph-marker 15,372
+(defconst text-span-start-marker 16,430
+(defconst text-span-end-marker 17,491
+(defconst style-tag-prefix 18,554
+(defconst text-list-tag-prefix 19,618
+(defconst text-list-end-tag 20,680
+(defconst text-h-tag-prefix 21,748
+(defconst text-p-tag-prefix 22,807
+(defconst text-span-tag-prefix 23,866
+(defconst text-span-tag-postfix 24,928
+(defconst footnote-tag-prefix 25,991
+(defconst footnote-tag-postfix 26,1053
+(defconst footnote-start-marker 27,1116
+(defconst footnote-end-marker 28,1168
+(defconst text-note-body-start-tag 29,1220
+(defconst text-note-body-end-tag 30,1287
+(defconst office-text-tag-postfix 31,1355
+(defconst new-epos-buffer-name 32,1420
+(defconst font-style-tag-prefix 33,1479
+(defconst selected-style 34,1546
+(defconst heading-style 35,1597
+(defvar   styles-hash-table 36,1655
+(defvar   last-text-span-marker-style-name 37,1707
+(defvar   content-xml-buffer 38,1758
+(defconst heading-style 39,1809
+(defconst episoda-style 40,1872
+(defconst location-style 41,1937
+(defconst persons-style 42,2005
+(defconst persons-standalone-style 43,2071
+(defconst standard-style 44,2151
+(defconst standard-interrupted-style 45,2217
+(defconst standard-last-paragraph-style 46,2299
+(defconst insertion-style 47,2382
+(defconst insertion-last-paragraph-style 48,2448
+(defconst footnote-style 49,2535
+(defconst italics-style-name 50,2594
+(defconst personae-heading-string 51,2651
+(defconst italics-marker 52,2710
+(defvar   is-personae-section 53,2762
+(defvar   last-selected-style-name 54,2814
+(defconst indentation 55,2865
+(defconst indented-line-break 56,2918
+(defvar   style-name 57,2992
+(defvar   in-footnote 58,3043
+(defvar   in-text-note-body 59,3095
+(defvar   file-name 60,3147
+(defconst series-name 61,3198
+(defconst default-extension 62,3258
+(defconst epic-import-buffer 63,3313
+(defun epic-import-odt 67,3441
+(defun initialize-style 76,3700
+(defun initialize-heading 98,4628
+(defun get-style-name 128,5595
+(defun get-formatted-paragraph 141,6095
+(defun get-episoda-title 208,8894
+(defun initialize-file-name 216,9137
+(defun initialize-paragraph 226,9532
+(defun interpret-line 266,11189
+(defun clean-up-new-epos 281,11595
+(defun save-new-epos 296,12087
+(defun kill-content-xml-buffer 305,12355
+(defun kill-new-epos-buffer 313,12607
+(defun import-to-new-epos 320,12819
+(defun get-current-line 349,13864
+(defun get-next-line 356,14104
+(defun search-forward-replace-match 366,14407
+(defun prepare-styles 374,14664
+(defun prepare-text-h 381,14910
+(defun prepare-text-p 388,15163
+(defun prepare-text-list 396,15511
+(defun flush-unnecessary-lines 405,15930
+(defun extract-content-xml 414,16214
+(defun replace-special-characters 422,16502
+(defun prepare-document 428,16728
+(defun interpret-tag 444,17298
+
+epic-mobi.el,51
+(defconst kindlegen 1,0
+(defun mobi-create 5,111
+
+epic-mode.el,4143
+(defconst library-name 2,42
+(defvar   epic-configuration-file 3,107
+(defvar   library-path 4,163
+(defvar   library-directory 5,219
+(defconst no-template-selected 6,275
+(defconst standard-template 7,330
+(defconst heading-template 8,385
+(defconst location-template 9,440
+(defconst insertion-template 10,495
+(defconst person-template 11,550
+(defconst header-template 12,605
+(defconst legal-notice-template 13,660
+(defconst personae-template 14,715
+(defconst standard-template-continued 15,770
+(defconst wiki-template 16,825
+(defconst plot-template 17,880
+(defvar   lines-iterated 18,935
+(defvar   current-hook-function 19,989
+(defvar   uppercase-input 20,1045
+(defvar   current-output-function 21,1101
+(defvar   current-on-enter-function 22,1178
+(defvar   previous-output-function 23,1257
+(defvar   previous-input 24,1313
+(defvar   italics-input 25,1367
+(defvar   last-selected-template 26,1423
+(defvar   footnote-index 27,1496
+(defvar   selected-style 28,1550
+(defconst error-in-style 29,1606
+(defconst unknown-style 30,1675
+(defconst empty-line-style 31,1743
+(defvar   show-current-output-function 32,1808
+(defvar   display-selected-style 33,1864
+(defvar   last-char 34,1918
+(defconst background-color 35,1974
+(defconst foreground-color 36,2034
+(defconst plot-buffer-name 37,2093
+(defconst personae-file-name 38,2159
+(defconst impressum-file-name 39,2222
+(defconst werbung-file-name 40,2286
+(defun get-line-without-footnotes 45,2494
+(defun extract-plot-headings 65,3062
+(defun epos-check-styles 96,4223
+(defun epos-create 109,4690
+(defun default-output-function 119,4918
+(defun initialize-selected-template 125,5049
+(defun heading-chapter-output-function 172,7428
+(defun heading-output-function 179,7623
+(defun heading-chapter-on-enter-function 189,7900
+(defun heading-on-enter-function 199,8238
+(defun set-heading-template 209,8496
+(defun location-output-function 229,9356
+(defun location-on-enter-function 240,9667
+(defun set-location-template 248,9878
+(defun person-person-output-function 260,10331
+(defun person-person-on-enter-function 267,10539
+(defun person-output-function 275,10829
+(defun person-on-enter-function 293,11422
+(defun person-on-enter-function-ORIGINAL 302,11658
+(defun set-person-template 311,11901
+(defun standard-text-output-function 327,12491
+(defun standard-person-braces-on-enter-function 337,12798
+(defun standard-person-output-function 346,13134
+(defun standard-on-enter-function 361,13621
+(defun standard-person-on-enter-function 381,14156
+(defun set-standard-on-enter-function 394,14664
+(defun set-standard-template 400,14902
+(defun set-standard-template-continued 426,15931
+(defun insertion-output-function 436,16409
+(defun insertion-on-enter-function 446,16693
+(defun set-insertion-template 458,17041
+(defun display-selected-template 469,17511
+(defun display-current-line 476,17725
+(defun get-current-line 483,17917
+(defun legal-notice-text-output-function 490,18157
+(defun legal-notice-on-enter-function 497,18339
+(defun header-output-function 508,18619
+(defun header-on-enter-function 515,18775
+(defun personae-output-function 526,19043
+(defun personae-on-enter-function 533,19203
+(defun get-current-line-template 544,19475
+(defun query-episoda-number 660,24608
+(defun query-episoda-title 667,24807
+(defun insert-book-guid 674,25005
+(defun create-new-episoda 681,25170
+(defun cursor-is-at-end-of-line 698,25710
+(defun on-enter-default-function 706,25925
+(defun is-valid-select-template-input 743,26897
+(defun deinitialize-template 756,27271
+(defun  display-current-output-function 767,27715
+(defun initialize-template 773,27946
+(defun post-self-insert-hook-function(810,29201
+(defun on-enter 820,29499
+(defun on-backspace 828,29718
+(defun initialize 837,29959
+(defun debug-get-style 900,32192
+(defun get-style 909,32455
+(defun display-selected-style 974,34840
+(defun post-command-hook-function 980,35055
+(defun set-up-windows 1010,36085
+(defun get-epos-configuration-file-name 1022,36499
+(defun load-book-information 1029,36830
+(define-minor-mode epic-mode1040,37205
+(define-minor-mode plot-mode1056,37789
+
+epic-odt.el,1844
+(defconst odt-template-file-name 1,0
+(defconst odt-author-paragraph-prefix 2,81
+(defconst odt-title-paragraph-prefix 3,174
+(defconst odt-subtitle-paragraph-prefix 4,267
+(defconst odt-episoda-paragraph-prefix 5,365
+(defconst odt-publisher-paragraph-prefix 6,460
+(defconst odt-legal-notice-paragraph-prefix 7,554
+(defconst odt-heading-paragraph-prefix 8,651
+(defconst odt-standard-paragraph-prefix 9,772
+(defconst odt-standard-paragraph-continued-prefix 10,868
+(defconst odt-insertion-paragraph-prefix 11,977
+(defconst odt-location-paragraph-prefix 12,1073
+(defconst odt-person-paragraph-prefix 13,1171
+(defconst odt-person-standalone-paragraph-prefix 14,1267
+(defconst odt-personae-standard-paragraph-prefix 15,1374
+(defconst odt-empty-page-paragraph-prefix 16,1470
+(defconst odt-paragraph-postfix 17,1567
+(defconst odt-heading-postfix 18,1633
+(defconst odt-line-break 19,1699
+(defconst odt-italics-prefix 20,1772
+(defconst odt-italics-postfix 21,1869
+(defconst odt-footnote-prefix 22,1936
+(defconst odt-footnote-postfix 23,2138
+(defconst org-buffer-name 24,2231
+(defvar   org-file-name 25,2296
+(defconst odt-personae-buffer 26,2351
+(defconst meta-xml-buffer 27,2426
+(defconst odt-impressum-buffer 28,2496
+(defun create-odt-header 32,2638
+(defun begin-odt-document 54,3330
+(defun end-odt-document 60,3501
+(defun odt-create 66,3653
+(defun edit-meta-xml 92,4618
+(defun uncompress-odt-file 109,5463
+(defun compress-odt-file 118,5800
+(defun person-template-get-formatted-line 131,6309
+(defun odt-apply-style 185,8583
+(defun apply-footnotes 239,11154
+(defun apply-italics 264,12185
+(defun insert-formatted-line 287,12981
+(defun odt-insert-personae 294,13209
+(defun odt-insert-titel 313,14107
+(defun odt-insert-impressum 326,14745
+(defun odt-insert-empty-page 346,15583
+(defun iterate-odt-buffer 353,15835
+
+epic-pdf.el,24
+(defun pdf-create 3,65
+
+epic-plot.el,58
+(defconst plot-buffer-name 1,0
+(defun create-plot 5,109
+
+epic-wiki.el,58
+(defconst wiki-buffer-name 1,0
+(defun create-wiki 5,109
