@@ -854,7 +854,169 @@
 
 ;;; --------------------------------------------------------
 ;;;
+(defun is-heading-style (line)
+  "Checks if line has style of heading."
+  (if (or (string-match-p "^[A-ZÖÄÜ ]+$" line)
+	  (string-match-p "^[A-ZÖÄÜ ]+\\-[A-ZÖÄÜ a-zöäüß]+$" line)
+	  (string-match-p "^[A-ZÖÄÜ ]+\\-[A-ZÖÄÜ a-zöäüß]+[\\[[a-zA-Z .,öäüÖÄÜß]+\\]]*$" line))
+      t
+    nil))
+
+;;; --------------------------------------------------------
+;;;
+(defun is-location-style (line next-line-var)
+  "Checks if line has style of location."
+  (if (and (not (string-prefix-p indentation line))
+	   (eq (string-match-p "^[A-ZÖÄÜ ]\\{2\\}" line) nil)
+	   (not (string= "" next-line-var)))
+      t
+    nil))
+
+;;; --------------------------------------------------------
+;;;
+(defun is-persons-style (line previous-line-var next-line-var)
+  "Returns if line has style of persons."
+  (unless (or (string-prefix-p indentation line)
+	      (is-persons-standalone-style line previous-line-var next-line-var))	       
+    (setq is-location-style-var (is-location-style previous-line-var line))
+    (and (string= "" next-line-var)
+	 is-location-style-var)))
+
+;;; --------------------------------------------------------
+;;;
+(defun is-persons-standalone-style (line previous-line-var next-line-var)
+  "Returns if line has style of persons-standalone."
+  (if (and (not (string-prefix-p indentation line))
+	   (string= "" previous-line-var)
+	   (string= "" next-line-var))
+      t
+    nil))
+
+;;; --------------------------------------------------------
+;;;
 (defun get-style (line)
+  "Returns style of line."
+  (save-excursion
+    (cond
+     ((string= line "")
+      empty-line-style)
+     ;; heading-style
+     ((eq (is-heading-style line) t)
+      heading-style)
+     ;; location-style
+     ((eq (is-location-style line (get-next-line 1)) t)
+      location-style)
+     ;; persons-style
+     ((eq (is-persons-style line (get-next-line -1) (get-next-line 1)) t)
+      persons-style)
+     ;; persons-standalone-style
+     ((eq (is-persons-standalone-style line (get-next-line -1) (get-next-line 1)) t)
+      persons-standalone-style)
+     ;; insertion-style
+     ((or (string-prefix-p "(" line)
+	  (string-prefix-p (concat indentation "(") line))
+      insertion-style)
+     ;; standard- or standard-interrupted-style
+     ((string-prefix-p indentation line)
+      (while (and (string-prefix-p indentation line)
+		  (not (string-prefix-p "(" line))
+		  (not (string-prefix-p (concat indentation "(") line)))
+	(forward-line -1)
+	(setq line (get-current-line)))
+      (if (and (not (string-prefix-p indentation line))
+	       (not (string-prefix-p "(" line))
+	       (not (eq (get-style line) persons-standalone-style))
+	       (not (string= "" line)))
+	  standard-style
+	standard-interrupted-style))
+     ;; standard-, heading-, location- or persons-style
+     ((not (string-prefix-p indentation line))
+      ;; first line of buffer has to be heading
+      (if (= (line-beginning-position) 1)
+	  heading-style
+	(if (and (or (string-match-p "^[A-ZÖÄÜ \\-]*\\." line)
+		     (string-match-p "^[A-ZÖÄÜ \\-]*(\\([A-ZÖÄÜ a-zöäüß\\-]*\\))?\\.$" line)))
+	    standard-style
+	  ;; standard style first line
+	  (if (or (string-prefix-p indentation (get-next-line 1))
+	    	  (string-prefix-p indentation (get-next-line -1)))
+	      standard-style
+	    (setq lines-forward 0)
+	    (while (and (not (string= "" line))
+			(not (string-prefix-p indentation line))
+			(not (string-prefix-p "(" line))
+			(not (= (point) (point-max))))
+	      (forward-line)
+	      (setq lines-forward (+ lines-forward 1))
+	      (setq line (get-current-line))))))))))
+
+;;; --------------------------------------------------------
+;;;
+(defun get-style-TEMP (line)
+  "Returns style of line."
+  (save-excursion
+    (cond
+     ((string= line "")
+      empty-line-style)
+     ;; heading-style
+     ((eq (is-heading-style line) t)
+      heading-style)
+     ;; location-style
+     ((eq (is-location-style line) t)
+      location-style)
+     ;; persons-style
+     ((not (string-prefix-p indentation line))
+	   (setq previous-line (get-next-line -1))
+	   ;; persons-standalone-style
+	   (if (and (string= "" previous-line)
+	   	    (string= "" (get-next-line 1)))
+	       persons-standalone-style	     
+	     (and (is-location-style previous-line)
+	   	  (or (string= "" (get-next-line -2))
+	   	      (is-heading-style (get-next-line -2)))
+	   	  persons-style)))
+     ;; insertion-style
+     ((or (string-prefix-p "(" line)
+	  (string-prefix-p (concat indentation "(") line))
+      insertion-style)
+     ;; standard- or standard-interrupted-style
+     ((string-prefix-p indentation line)
+      (while (and (string-prefix-p indentation line)
+		  (not (string-prefix-p "(" line))
+		  (not (string-prefix-p (concat indentation "(") line)))
+	(forward-line -1)
+	(setq line (get-current-line)))
+      (if (and (not (string-prefix-p indentation line))
+	       (not (string-prefix-p "(" line))
+	       (not (eq (get-style line) persons-standalone-style))
+	       (not (string= "" line)))
+	  standard-style
+	standard-interrupted-style))
+     ;; standard-, heading-, location- or persons-style
+     ((not (string-prefix-p indentation line))
+      ;; first line of buffer has to be heading
+      (if (= (line-beginning-position) 1)
+	  heading-style
+	(if (and (or (string-match-p "^[A-ZÖÄÜ \\-]*\\." line)
+		     (string-match-p "^[A-ZÖÄÜ \\-]*(\\([A-ZÖÄÜ a-zöäüß\\-]*\\))?\\.$" line)))
+	    standard-style
+	  ;; standard style first line
+	  (if (or (string-prefix-p indentation (get-next-line 1))
+	    	  (string-prefix-p indentation (get-next-line -1)))
+	      standard-style
+	    (setq lines-forward 0)
+	    (while (and (not (string= "" line))
+			(not (string-prefix-p indentation line))
+			(not (string-prefix-p "(" line))
+			(not (= (point) (point-max))))
+	      (forward-line)
+	      (setq lines-forward (+ lines-forward 1))
+	      (setq line (get-current-line))))))))))
+
+
+;;; --------------------------------------------------------
+;;;
+(defun get-style-ORIGINAL (line)
   "Returns style of line."
   (save-excursion
     (cond

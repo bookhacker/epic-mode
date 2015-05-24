@@ -4,7 +4,7 @@ epic-createspace.el,120
 (defun create-createspace-header 5,164
 (defun createspace-create 27,872
 
-epic-epub.el,1193
+epic-epub.el,1141
 (defconst content-opf-buffer-name 1,0
 (defconst toc-ncx-buffer-name 2,66
 (defconst opf-book-id 3,128
@@ -27,14 +27,13 @@ epic-epub.el,1193
 (defun epub-create-mimetype-file 80,3121
 (defun epub-create-container-xml-file 89,3435
 (defun epub-create-content-opf 98,3877
-(defun epub-create-content-opf_original 168,7905
-(defun epub-create-toc-ncx 228,11092
-(defun epub-close-toc-ncx 266,12584
-(defun epub-insert-into-toc-ncx-first-level 296,13743
-(defun epub-insert-into-toc-ncx-second-level 311,14680
-(defun epub-create-style-css 324,15676
-(defun epub-create-files 332,16057
-(defun epub-compress-files 345,16385
+(defun epub-create-toc-ncx 168,7905
+(defun epub-close-toc-ncx 206,9397
+(defun epub-insert-into-toc-ncx-first-level 236,10556
+(defun epub-insert-into-toc-ncx-second-level 251,11493
+(defun epub-create-style-css 264,12489
+(defun epub-create-files 272,12870
+(defun epub-compress-files 285,13198
 
 epic-general-functions.el,91
 (defun get-guid 3,65
@@ -101,7 +100,7 @@ epic-html.el,2475
 (defun write-footnotes-html 506,22609
 (defun iterate-html-buffer 517,23126
 (defun create-title-page 529,23430
-(defun create-html 552,24615
+(defun create-html 552,24633
 
 epic-import.el,2824
 (defconst heading-marker 1,0
@@ -185,7 +184,7 @@ epic-mobi.el,51
 (defconst kindlegen 1,0
 (defun mobi-create 5,111
 
-epic-mode.el,4086
+epic-mode.el,4316
 (defconst library-name 2,42
 (defvar   epic-configuration-file 3,107
 (defvar   library-path 4,163
@@ -280,14 +279,20 @@ epic-mode.el,4086
 (defun on-backspace 776,28285
 (defun initialize 785,28526
 (defun debug-get-style 848,30759
-(defun get-style 857,31022
-(defun display-selected-style 918,33344
-(defun post-command-hook-function 924,33559
-(defun set-up-windows 947,34333
-(defun get-epos-configuration-file-name 959,34747
-(defun load-book-information 966,35078
-(define-minor-mode epic-mode974,35386
-(define-minor-mode plot-mode990,35962
+(defun is-heading-style 857,31022
+(defun is-location-style 867,31404
+(defun is-persons-style 877,31714
+(defun is-persons-standalone-style 892,32239
+(defun get-style 903,32556
+(defun get-style-TEMP 970,35068
+(defun get-style-ORIGINAL 1034,37372
+(defun display-selected-style 1095,39703
+(defun post-command-hook-function 1101,39918
+(defun set-up-windows 1124,40692
+(defun get-epos-configuration-file-name 1136,41106
+(defun load-book-information 1143,41437
+(define-minor-mode epic-mode1151,41745
+(define-minor-mode plot-mode1167,42321
 
 epic-odt.el,1844
 (defconst odt-template-file-name 1,0
