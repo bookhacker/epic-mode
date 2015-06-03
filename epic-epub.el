@@ -255,7 +255,9 @@
       (when epub-is-new-second-level
 	(setq epub-is-new-second-level nil))
       (setq epub-has-second-level t)
-      (setq new-nav-point (concat "      <navPoint id=\"ncxcontent" (number-to-string navpoint-index) "\" playOrder=\"" (number-to-string navpoint-index) "\">\n        <navLabel>\n          <text>" (get-line-without-footnotes current-heading-text) "</text>\n        </navLabel>\n        <content src=\"content/" (number-to-string current-html-file-index) ".html#" fnreturn-prefix (number-to-string current-line-number) "\" />\n      </navPoint>"))
+      (if (eq last-style heading-style)
+	  (setq new-nav-point (concat "      <navPoint id=\"ncxcontent" (number-to-string navpoint-index) "\" playOrder=\"" (number-to-string navpoint-index) "\">\n        <navLabel>\n          <text>" (get-line-without-footnotes current-heading-text) "</text>\n        </navLabel>\n        <content src=\"content/" (number-to-string current-html-file-index) ".html\" />\n      </navPoint>"))
+	(setq new-nav-point (concat "      <navPoint id=\"ncxcontent" (number-to-string navpoint-index) "\" playOrder=\"" (number-to-string navpoint-index) "\">\n        <navLabel>\n          <text>" (get-line-without-footnotes current-heading-text) "</text>\n        </navLabel>\n        <content src=\"content/" (number-to-string current-html-file-index) ".html#" fnreturn-prefix (number-to-string current-line-number) "\" />\n      </navPoint>")))
       (insert new-nav-point)(newline)
       (setq navpoint-index (+ navpoint-index 1)))))
 

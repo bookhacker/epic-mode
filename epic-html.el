@@ -132,7 +132,9 @@ title-combined)
     (setq line (concat html-heading-paragraph-prefix line html-heading-postfix)))
    ;; location-template
    ((eq style location-style)
-    (setq line (html-insert-fnreturn line))
+;;neu
+    (unless (eq last-style heading-style)
+      (setq line (html-insert-fnreturn line)))
     (setq line (concat html-location-paragraph-prefix line html-paragraph-postfix)))
    ;; persons-template
    ((or (eq style persons-style)
@@ -278,7 +280,9 @@ title-combined)
 	(insert "<li>\n<span />\n<ul>\n")
 	(setq is-new-second-level nil))
       (setq has-second-level t)
-      (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"" (number-to-string html-file-index) ".html#" fnreturn-prefix (number-to-string lines-iterated) "\"  style=\"text-decoration: none\">" (get-line-without-footnotes heading-text) "</a></p></li>"))
+      (if (eq last-style heading-style)
+	  (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"" (number-to-string html-file-index) ".html\" style=\"text-decoration: none\">" (get-line-without-footnotes heading-text) "</a></p></li>"))
+	(setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"" (number-to-string html-file-index) ".html#" fnreturn-prefix (number-to-string lines-iterated) "\"  style=\"text-decoration: none\">" (get-line-without-footnotes heading-text) "</a></p></li>")))
       (insert html-toc-entry)(newline)
       (setq heading-text ""))))
 
@@ -446,6 +450,60 @@ title-combined)
 ;;; ---------------------------------------------------------
 ;;;
 (defun iterate-epos-buffer ()
+  "Iterates text buffer."
+  (setq lines-iterated 0)
+  (setq heading-text "")
+  (setq current-style nil)
+  (setq current-line nil)
+  (setq last-line nil)
+  (setq last-style nil)
+  (goto-char 1)
+  (while (< (point)(point-max))
+    (setq current-fnreturn-anchor (concat "<a id=\"" fnreturn-prefix (number-to-string lines-iterated) "\"></a>"))
+    (setq current-line (get-current-line))
+    (setq current-style (get-style current-line))
+    (unless (eq current-style empty-line-style)
+      (when (eq current-style heading-style)
+	(setq next-line (get-next-line 1))
+	(if (eq next-line "")
+	    (setq heading-text current-line)
+ 	  ;; (setq next-line-partial (get-location-first-part next-line))
+	  ;;	  (setq heading-text (concat current-line ": " next-line-partial)))
+	  (setq heading-text current-line))
+	(close-old-file)
+	(epub-insert-into-toc-ncx-first-level heading-text html-file-index)
+	(insert-into-toc-html-first-level)
+	;;
+	;; neu
+	;;
+      	;; (setq heading-text (get-location-first-part next-line))
+	;; (epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
+      	;; (insert-into-toc-html-second-level)
+	;;
+	;; /neu
+	;;
+	(create-new-file)
+
+	)
+      ;; (when (and (not (eq last-style heading-style))
+      ;; 		 (eq current-style location-style))
+      (when (eq current-style location-style)
+      	(setq heading-text (get-location-first-part current-line))
+	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
+      	(insert-into-toc-html-second-level))
+      (setq current-line (html-apply-italics current-line))
+      (setq current-line (html-apply-footnotes current-line))
+      (setq current-line (html-apply-style current-style current-line last-style))
+      (html-insert-line current-line)
+      (setq last-style current-style)
+      (setq last-line current-line))
+    (setq lines-iterated (+ lines-iterated 1))
+    (message (format "lines-iterated: %d" lines-iterated))
+    (forward-line)))
+
+;;; ---------------------------------------------------------
+;;;
+(defun iterate-epos-buffer_ORIGINAL ()
   "Iterates text buffer."
   (setq lines-iterated 0)
   (setq heading-text "")
