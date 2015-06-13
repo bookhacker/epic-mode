@@ -30,7 +30,7 @@
 (defconst unknown-style                            "unknown style")
 (defconst empty-line-style                         "empty line")
 (defvar   show-current-output-function             nil)
-(defvar   display-selected-style                   t)
+(defvar   display-selected-style                   nil)
 (defvar   last-char                                nil)
 (defconst background-color                         "black")
 (defconst foreground-color                         "cyan")
@@ -814,31 +814,22 @@
 				  ("^(.*?)$"         . font-lock-keyword-face)
 				  ("^  (.*?)$"       . font-lock-keyword-face)))
 
-  ;; 
   ;;
   ;; Center text input and 60 charachters per line through window margins
   ;;
-  ;;  (add-hook 'window-configuration-change-hook (lambda () (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 34 33)))
-  ;;
-  ;; sudo dpkg-reconfigure console-setup TerminusBold 24x12
-  ;;
-  (add-hook 'window-configuration-change-hook (lambda () (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 12 12)))
-  ;;
-  ;; sudo dpkg-reconfigure console-setup TerminusBold 32x16
-  ;;
-  ;;(add-hook 'window-configuration-change-hook (lambda () (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 5 0)))
-
+  (add-hook 'window-configuration-change-hook (lambda () (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 29 29)))
 
   (setq word-wrap t)
 
   (setq library-path (locate-library library-name))
   (setq library-directory (file-name-directory library-path))
 
-  (if (= (point-max) 1)
-      (create-new-episoda)
-    (goto-char (point-max))
-    (get-current-line-template)
-    (setq last-selected-template selected-template))
+  ;; (if (= (point-max) 1)
+  ;;     (create-new-episoda)
+  ;;   (goto-char (point-max))
+  ;;   (get-current-line-template)
+  ;;   (setq last-selected-template selected-template))
+
   (goto-char (point-max))
   (when display-selected-style
     display-selected-style))
