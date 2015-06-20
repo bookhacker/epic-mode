@@ -15,6 +15,7 @@
 (defconst standard-template-continued               9)
 (defconst wiki-template                            10)
 (defconst plot-template                            11)
+(defconst person-standalone-template               12)
 (defvar   lines-iterated                           0)
 (defvar   current-hook-function                    nil)
 (defvar   uppercase-input                          nil)
@@ -30,7 +31,7 @@
 (defconst unknown-style                            "unknown style")
 (defconst empty-line-style                         "empty line")
 (defvar   show-current-output-function             nil)
-(defvar   display-selected-style                   nil)
+(defvar   display-selected-style                   t)
 (defvar   last-char                                nil)
 (defconst background-color                         "black")
 (defconst foreground-color                         "cyan")
@@ -38,6 +39,8 @@
 (defconst personae-file-name                       "personae")
 (defconst impressum-file-name                      "impressum")
 (defconst werbung-file-name                        "werbung.html")
+(defvar margin-left                                29)
+(defvar margin-right                               29)
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -200,7 +203,7 @@
   (when (eq last-char 13)
     (delete-backward-char 3))
   (deinitialize-template)
-  (insert "\n")
+  (insert "\n** ")
   (set-location-template))
 
 ;;; ---------------------------------------------------------
@@ -234,7 +237,7 @@
 (defun location-on-enter-function ()
   "Handles location template on enter."
   (deinitialize-template)
-  (insert "\n")
+  (insert "\n*** ")
   (set-person-template))
 
 ;;; ---------------------------------------------------------
@@ -266,6 +269,21 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun person-person-standalone-output-function ()
+  "Handles person template person output."
+  (delete-backward-char 1)
+  (insert (upcase last-char)))
+
+;;; ---------------------------------------------------------
+;;;
+(defun person-person-standalone-on-enter-function ()
+  "Handles person template person-on-enter."
+  (insert " ")
+  (setq current-output-function   'person-output-function)
+  (setq current-on-enter-function 'person-on-enter-function))
+
+;;; ---------------------------------------------------------
+;;;
 (defun person-output-function ()
   "Handles person template output."
   (if (and
@@ -284,7 +302,34 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun person-standalone-output-function ()
+  "Handles person standalone template output."
+  (if (and
+       (eq (is-uppercase-letter last-char)      t)
+       (eq (is-uppercase-letter previous-input) t))
+      (progn
+	(end-of-line)
+	(setq previous-input 0)
+	(setq current-output-function   'person-standalone-person-output-function)
+	(setq current-on-enter-function 'person-person-standalone-on-enter-function))
+    (delete-backward-char 1)
+    (if (eq uppercase-input t)
+    	(insert (upcase last-char))
+      (insert last-char))
+    (setq previous-input last-char)))
+
+;;; ---------------------------------------------------------
+;;;
 (defun person-on-enter-function ()
+  "Handles person on enter."
+  (when (eq (char-before) 32)
+    (delete-backward-char 1))
+  (insert "\n\n")
+  (set-standard-template))
+
+;;; ---------------------------------------------------------
+;;;
+(defun person-standalone-on-enter-function ()
   "Handles person on enter."
   (when (eq (char-before) 32)
     (delete-backward-char 1))
@@ -297,6 +342,15 @@
   "Sets and initializes person template."
   (setq selected-template         person-template)
   (setq current-output-function   'person-output-function)
+  (setq current-on-enter-function 'person-on-enter-function)
+  (setq uppercase-input            nil))
+
+;;; ---------------------------------------------------------
+;;;
+(defun set-person-standalone-template ()
+  "Sets and initializes person standalone template."
+  (setq selected-template         person-standalone-template)
+  (setq current-output-function   'person-standalone-output-function)
   (setq current-on-enter-function 'person-on-enter-function)
   (setq uppercase-input            nil))
 
@@ -337,6 +391,16 @@
 ;;; ---------------------------------------------------------
 ;;;
 (defun standard-on-enter-function ()
+  "Handles on-enter when standard template is selected."
+  (if (string= indentation (get-current-line))
+      (progn
+	(delete-backward-char (length indentation))
+	(set-standard-template))
+    (insert "\n" indentation)))
+
+;;; ---------------------------------------------------------
+;;;
+(defun standard-interrupted-on-enter-function ()
   "Handles on-enter when standard template is selected."
   (if (string= indentation (get-current-line))
       (progn
@@ -725,48 +789,80 @@
     (deinitialize-template))
    ((eq (get-style (get-current-line)) heading-style)
     (set-heading-template))
+   ((eq (get-style (get-current-line)) location-style)
+    (set-location-template))
+   ((eq (get-style (get-current-line)) persons-style)
+    (set-person-template))
+   ((eq (get-style (get-current-line)) persons-standalone-style)
+    (set-person-standalone-template))
    ((eq (get-style (get-current-line)) standard-style)
-    (if (string-prefix-p indentation (get-current-line))
-	(set-standard-template-continued)
-      (set-standard-template)))
-   ((and (eq (current-column) 1)
-	 (eq current-output-function nil)
-	 (eq (is-valid-select-template-input last-char) t))
-    (cond
-     ((eq (is-lowercase-letter last-char) t)
-      (set-standard-template))   
-     ((eq (is-uppercase-letter last-char) t)
-      (set-person-template))
-     ((eq last-char 40) ; 40 (
-      (set-insertion-template))
-     ((and
-       (eq previous-input 13)
-       (eq last-char 49)) ; 49 1
-      (set-location-template))
-     ((and
-       (eq previous-input 13)
-       (eq last-char 50)) ; 50 2
-      (set-wiki-template))))
-   ((eq (current-column) 3)
-    (when (string-prefix-p indentation (get-current-line))
-      (if (eq last-char 40) ; 40 (
-	  (set-insertion-template)
-	(set-standard-template-continued))))))
+    (set-standard-style))
+   ((eq (get-style (get-current-line)) standard-interrupted-style)
+    (set-standard-interrupted-style))))
+
+
+   ;;  (if (string-prefix-p indentation (get-current-line))
+   ;; 	(set-standard-template-continued)
+   ;;    (set-standard-template)))
+   ;; ((and (eq (current-column) 1)
+   ;; 	 (eq current-output-function nil)
+   ;; 	 (eq (is-valid-select-template-input last-char) t))
+   ;;  (cond
+   ;;   ((eq (is-lowercase-letter last-char) t)
+   ;;    (set-standard-template))   
+   ;;   ((eq (is-uppercase-letter last-char) t)
+   ;;    (set-person-template))
+   ;;   ((eq last-char 40) ; 40 (
+   ;;    (set-insertion-template))
+   ;;   ((and
+   ;;     (eq previous-input 13)
+   ;;     (eq last-char 49)) ; 49 1
+   ;;    (set-location-template))
+   ;;   ((and
+   ;;     (eq previous-input 13)
+   ;;     (eq last-char 50)) ; 50 2
+   ;;    (set-wiki-template))))
+   ;; ((eq (current-column) 3)
+   ;;  (when (string-prefix-p indentation (get-current-line))
+   ;;    (if (eq last-char 40) ; 40 (
+   ;; 	  (set-insertion-template)
+   ;; 	(set-standard-template-continued))))))
 
 ;;; ---------------------------------------------------------
 ;;;
 (defun post-self-insert-hook-function()
   "Handles post-self-insert-hook"
   (setq last-char (char-before))
-;;  (initialize-template)
+  (initialize-template)
   (funcall current-output-function)
   (when display-selected-style
     (display-selected-style)))
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun initialize-on-enter-function ()
+  "Initializes on-enter-function."
+  (cond
+   ((eq (get-style (get-current-line)) empty-line-style)
+    (setq current-on-enter-function 'on-enter-default-function))
+   ((eq (get-style (get-current-line)) heading-style)
+    (setq current-on-enter-function 'heading-on-enter-function))
+   ((eq (get-style (get-current-line)) location-style)
+    (setq current-on-enter-function 'location-on-enter-function))
+   ((eq (get-style (get-current-line)) persons-style)
+    (setq current-on-enter-function 'person-on-enter-function))
+   ((eq (get-style (get-current-line)) persons-standalone-style)
+    (setq current-on-enter-function '    person-standalone-on-enter-function))
+   ((eq (get-style (get-current-line)) standard-style)
+    (setq current-on-enter-function 'standard-on-enter-function))
+   ((eq (get-style (get-current-line)) standard-interrupted-style)
+    (setq current-on-enter-function 'standard-interrupted-on-enter-function))))
+
+;;; ---------------------------------------------------------
+;;;
 (defun on-enter ()
   "Fires when enter is pressed."
+  (initialize-on-enter-function)
   (funcall current-on-enter-function)
   (when display-selected-style
     (display-selected-style)))
@@ -817,10 +913,9 @@
   ;;
   ;; Center text input and 60 charachters per line through window margins
   ;;
-  ;;(add-hook 'window-configuration-change-hook (lambda () (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 29 29)) 'make-it-local)
   (add-hook 'window-configuration-change-hook
-	    (lambda () (set-window-margins nil 29 29))
-	    nil 'local)
+  	    (lambda () (set-window-margins nil margin-left margin-right))
+  	    nil 'local)
 
   (setq word-wrap t)
 
@@ -834,55 +929,66 @@
   ;;   (setq last-selected-template selected-template))
 
   (goto-char (point-max))
+  (initialize-template)
   (when display-selected-style
     display-selected-style))
 
 ;;; --------------------------------------------------------
 ;;;
-(defun debug-get-style ()
-  "Debug function for get-style(line)."
-  (interactive)
-  (if (eq (get-style (get-current-line)) nil)
-      (message "nil")
-    (message (get-style (get-current-line)))))
-
-;;; --------------------------------------------------------
-;;;
 (defun is-heading-style (line)
   "Checks if line has style of heading."
-  (if (or (string-match-p "^[A-ZÖÄÜ ]+$" line)
-	  (string-match-p "^[A-ZÖÄÜ ]+\\-[A-ZÖÄÜ a-zöäüß]+$" line)
-	  (string-match-p "^[A-ZÖÄÜ ]+\\-[A-ZÖÄÜ a-zöäüß]+[\\[[a-zA-Z .,öäüÖÄÜß]+\\]]*$" line))
+  (if (string-prefix-p "* " line)
       t
     nil))
 
 ;;; --------------------------------------------------------
 ;;;
-(defun is-location-style (line next-line-var)
+(defun is-location-style (line)
   "Checks if line has style of location."
-  (if (and (not (string-prefix-p indentation line))
-	   (eq (string-match-p "^[A-ZÖÄÜ ]\\{2\\}" line) nil)
-	   (not (string= "" next-line-var)))
+  (if (string-prefix-p "** " line)
       t
     nil))
 
 ;;; --------------------------------------------------------
 ;;;
-(defun is-persons-style (line previous-line-var next-line-var)
+(defun is-persons-style (line previous-line-var)
   "Returns if line has style of persons."
-  (unless (or (string-prefix-p indentation line)
-	      (is-persons-standalone-style line previous-line-var next-line-var))	       
-    (setq is-location-style-var (is-location-style previous-line-var line))
-    (and (string= "" next-line-var)
-	 is-location-style-var)))
+  (if (and (string-prefix-p "*** " line)
+	   (not (string= "" previous-line-var)))
+      t
+    nil))
 
 ;;; --------------------------------------------------------
 ;;;
-(defun is-persons-standalone-style (line previous-line-var next-line-var)
+(defun is-persons-standalone-style (line previous-line-var)
   "Returns if line has style of persons-standalone."
-  (if (and (not (string-prefix-p indentation line))
-	   (string= "" previous-line-var)
-	   (string= "" next-line-var))
+  (if (and (string-prefix-p "*** " line)
+	   (string= "" previous-line-var))
+      t
+    nil))
+
+;;; --------------------------------------------------------
+;;;
+(defun is-insertion-style (line)
+  "Returns if line has style of persons-standalone."
+  (if (string-prefix-p (concat indentation "(") line)
+      t
+    nil))
+
+;;; --------------------------------------------------------
+;;;
+(defun is-standard-style (line)
+  "Returns if line has style of persons-standalone."
+  (if (string-match-p "^[A-ZÖÄÜ]" line)
+      t
+    nil))
+
+;;; --------------------------------------------------------
+;;;
+(defun is-standard-interrupted-style (line)
+  "Returns if line has style of standard interrupted."
+  (if (and (not (is-insertion-style line))
+	   (string-prefix-p indentation line))
       t
     nil))
 
@@ -898,176 +1004,23 @@
      ((eq (is-heading-style line) t)
       heading-style)
      ;; location-style
-     ((eq (is-location-style line (get-next-line 1)) t)
-      location-style)
-     ;; persons-style
-     ((eq (is-persons-style line (get-next-line -1) (get-next-line 1)) t)
-      persons-style)
-     ;; persons-standalone-style
-     ((eq (is-persons-standalone-style line (get-next-line -1) (get-next-line 1)) t)
-      persons-standalone-style)
-     ;; insertion-style
-     ((or (string-prefix-p "(" line)
-	  (string-prefix-p (concat indentation "(") line))
-      insertion-style)
-     ;; standard- or standard-interrupted-style
-     ((string-prefix-p indentation line)
-      (while (and (string-prefix-p indentation line)
-		  (not (string-prefix-p "(" line))
-		  (not (string-prefix-p (concat indentation "(") line)))
-	(forward-line -1)
-	(setq line (get-current-line)))
-      (if (and (not (string-prefix-p indentation line))
-	       (not (string-prefix-p "(" line))
-	       (not (eq (get-style line) persons-standalone-style))
-	       (not (string= "" line)))
-	  standard-style
-	standard-interrupted-style))
-     ;; standard-, heading-, location- or persons-style
-     ((not (string-prefix-p indentation line))
-      ;; first line of buffer has to be heading
-      (if (= (line-beginning-position) 1)
-	  heading-style
-	(if (and (or (string-match-p "^[A-ZÖÄÜ \\-]*\\." line)
-		     (string-match-p "^[A-ZÖÄÜ \\-]*(\\([A-ZÖÄÜ a-zöäüß\\-]*\\))?\\.$" line)))
-	    standard-style
-	  ;; standard style first line
-	  (if (or (string-prefix-p indentation (get-next-line 1))
-	    	  (string-prefix-p indentation (get-next-line -1)))
-	      standard-style
-	    (setq lines-forward 0)
-	    (while (and (not (string= "" line))
-			(not (string-prefix-p indentation line))
-			(not (string-prefix-p "(" line))
-			(not (= (point) (point-max))))
-	      (forward-line)
-	      (setq lines-forward (+ lines-forward 1))
-	      (setq line (get-current-line))))))))))
-
-;;; --------------------------------------------------------
-;;;
-(defun get-style-TEMP (line)
-  "Returns style of line."
-  (save-excursion
-    (cond
-     ((string= line "")
-      empty-line-style)
-     ;; heading-style
-     ((eq (is-heading-style line) t)
-      heading-style)
-     ;; location-style
      ((eq (is-location-style line) t)
       location-style)
      ;; persons-style
-     ((not (string-prefix-p indentation line))
-	   (setq previous-line (get-next-line -1))
-	   ;; persons-standalone-style
-	   (if (and (string= "" previous-line)
-	   	    (string= "" (get-next-line 1)))
-	       persons-standalone-style	     
-	     (and (is-location-style previous-line)
-	   	  (or (string= "" (get-next-line -2))
-	   	      (is-heading-style (get-next-line -2)))
-	   	  persons-style)))
+     ((eq (is-persons-style line (get-next-line -1)) t)
+      persons-style)
+     ;; persons-standalone-style
+     ((eq (is-persons-standalone-style line (get-next-line -1)) t)
+      persons-standalone-style)
      ;; insertion-style
-     ((or (string-prefix-p "(" line)
-	  (string-prefix-p (concat indentation "(") line))
+     ((eq (is-insertion-style line) t)
       insertion-style)
-     ;; standard- or standard-interrupted-style
-     ((string-prefix-p indentation line)
-      (while (and (string-prefix-p indentation line)
-		  (not (string-prefix-p "(" line))
-		  (not (string-prefix-p (concat indentation "(") line)))
-	(forward-line -1)
-	(setq line (get-current-line)))
-      (if (and (not (string-prefix-p indentation line))
-	       (not (string-prefix-p "(" line))
-	       (not (eq (get-style line) persons-standalone-style))
-	       (not (string= "" line)))
-	  standard-style
-	standard-interrupted-style))
-     ;; standard-, heading-, location- or persons-style
-     ((not (string-prefix-p indentation line))
-      ;; first line of buffer has to be heading
-      (if (= (line-beginning-position) 1)
-	  heading-style
-	(if (and (or (string-match-p "^[A-ZÖÄÜ \\-]*\\." line)
-		     (string-match-p "^[A-ZÖÄÜ \\-]*(\\([A-ZÖÄÜ a-zöäüß\\-]*\\))?\\.$" line)))
-	    standard-style
-	  ;; standard style first line
-	  (if (or (string-prefix-p indentation (get-next-line 1))
-	    	  (string-prefix-p indentation (get-next-line -1)))
-	      standard-style
-	    (setq lines-forward 0)
-	    (while (and (not (string= "" line))
-			(not (string-prefix-p indentation line))
-			(not (string-prefix-p "(" line))
-			(not (= (point) (point-max))))
-	      (forward-line)
-	      (setq lines-forward (+ lines-forward 1))
-	      (setq line (get-current-line))))))))))
-
-
-;;; --------------------------------------------------------
-;;;
-(defun get-style-ORIGINAL (line)
-  "Returns style of line."
-  (save-excursion
-    (cond
-     ((string= line "")
-      empty-line-style)
-     ;; heading-style
-     ((or (not (eq (string-match-p "^[A-ZÖÄÜ ]+$" line) nil))
-	  (not (eq (string-match-p "^[A-ZÖÄÜ ]+\\-[A-ZÖÄÜ a-zöäüß]+$" line) nil))
-	  (not (eq (string-match-p "^[A-ZÖÄÜ ]+\\-[A-ZÖÄÜ a-zöäüß]+[\\[[a-zA-Z .,öäüÖÄÜß]+\\]]*$" line) nil)))
-      heading-style)
-     ;; insertion-style
-     ((or (string-prefix-p "(" line)
-	  (string-prefix-p (concat indentation "(") line))
-      insertion-style)
-     ;; standard- or standard-interrupted-style
-     ((string-prefix-p indentation line)
-      (while (and (string-prefix-p indentation line)
-		  (not (string-prefix-p "(" line))
-		  (not (string-prefix-p (concat indentation "(") line)))
-	(forward-line -1)
-	(setq line (get-current-line)))
-      (if (and (not (string-prefix-p indentation line))
-	       (not (string-prefix-p "(" line))
-	       (not (eq (get-style line) persons-standalone-style))
-	       (not (string= "" line)))
-	  standard-style
-	standard-interrupted-style))
-     ;; standard-, heading-, location- or persons-style
-     ((not (string-prefix-p indentation line))
-      ;; first line of buffer has to be heading
-      (if (= (line-beginning-position) 1)
-	  heading-style
-	(if (and (or (string-match-p "^[A-ZÖÄÜ \\-]*\\." line)
-		     (string-match-p "^[A-ZÖÄÜ \\-]*(\\([A-ZÖÄÜ a-zöäüß\\-]*\\))?\\.$" line))
-		 (and (not (string= (get-next-line 1) ""))))
-	    standard-style
-	  ;; standard style first line
-	  (if (or (string-prefix-p indentation (get-next-line 1))
-	    	  (string-prefix-p indentation (get-next-line -1)))
-	      standard-style
-	    (setq lines-forward 0)
-	    (while (and (not (string= "" line))
-			(not (string-prefix-p indentation line))
-			(not (string-prefix-p "(" line))
-			(not (= (point) (point-max))))
-	      (forward-line)
-	      (setq lines-forward (+ lines-forward 1))
-	      (setq line (get-current-line)))
-	    ;; heading-, location- or persons-style
-	    (when (string= "" line)
-	      (cond
-	       ((= lines-forward 1)
-		(if (string= (get-next-line -2) "")
-		    persons-standalone-style
-		  persons-style))
-	       ((= lines-forward 2)
-		location-style))))))))))
+     ;; standard-style
+     ((eq (is-standard-style line) t)
+      standard-style)
+     ;; standard-continued
+     ((eq (is-standard-interrupted-style line) t)
+      standard-interrupted-style))))
 
 ;;; --------------------------------------------------------
 ;;;
@@ -1100,18 +1053,6 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun set-up-windows ()
-  "Sets up buffers and windows."
-  (with-current-buffer (get-buffer-create (current-buffer))
-    (split-window nil 20 'left)
-    (switch-to-buffer (get-buffer-create "epic-templates"))
-    (other-window 1)
-    (split-window nil 40 'right)
-    (switch-to-buffer (get-buffer-create "epic-navigator"))
-    (other-window 1)))
-
-;;; ---------------------------------------------------------
-;;;
 (defun get-epos-configuration-file-name ()
   "Returns the name of the configuration file."
   (interactive)
@@ -1141,36 +1082,10 @@
   ;; for navigate-input
   (add-hook 'post-command-hook 'post-command-hook-function t t))
 
-;;; ---------------------------------------------------------
-;;;
-(define-minor-mode plot-mode
-  "Mode for plot of an episoda."
-  ;;
-  ;; Disable distractions
-  ;;
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-
-  (setq truncate-lines nil)
-  ;;
-  ;; hiding mode-line completely aligns last line to the left (bug?).
-  ;; Simply setting back- and foreground to black creates an empty black line on the bottom.
-  ;;
-  (setq mode-line-format "")
-  (set-face-foreground 'mode-line          background-color)
-  (set-face-background 'mode-line          background-color)
-  (set-face-background 'mode-line-inactive background-color)
-  
-  (set-face-background 'default            background-color)
-  (set-face-foreground 'default            foreground-color)
-  (add-hook 'window-configuration-change-hook (lambda () (set-window-margins (car (get-buffer-window-list (current-buffer) nil t)) 0 0))))
-
-
 (setq auto-mode-alist (append '(("\.epos$" . epic-mode)
 				("\.epic$" . epic-mode)
 				("\.plot$" . plot-mode))
-	      auto-mode-alist))
+			      auto-mode-alist))
 
 (load "epic-epub")
 (load "epic-odt")
@@ -1180,5 +1095,4 @@
 (load "epic-general-functions")
 (load "epic-import")
 (load "epic-createspace.el")
-
 ;;;; epic-mode.el ends here
