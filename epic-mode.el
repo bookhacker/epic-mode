@@ -443,7 +443,8 @@
       (if (string-match-p "(" (get-current-line))
 	  (setq current-on-enter-function 'standard-person-braces-on-enter-function)
 	(setq current-on-enter-function 'standard-person-on-enter-function))))
-  (when (= (current-column) 0)
+  ;; (when (= (current-column) 0)
+  (when (< (current-column) 2)
     (setq uppercase-input t)))
 
 ;;; ---------------------------------------------------------
@@ -799,7 +800,7 @@
    ((eq (get-style (get-current-line)) standard-style)
     (set-standard-template))
    ((eq (get-style (get-current-line)) standard-interrupted-style)
-    (set-standard-template-continued))))
+    (set-standard-template-continued))
 
 
    ;;  (if (string-prefix-p indentation (get-current-line))
@@ -808,9 +809,9 @@
    ;; ((and (eq (current-column) 1)
    ;; 	 (eq current-output-function nil)
    ;; 	 (eq (is-valid-select-template-input last-char) t))
-   ;;  (cond
-   ;;   ((eq (is-lowercase-letter last-char) t)
-   ;;    (set-standard-template))   
+  ;;  (cond
+  ((eq (is-lowercase-letter last-char) t)
+   (set-standard-template)))
    ;;   ((eq (is-uppercase-letter last-char) t)
    ;;    (set-person-template))
    ;;   ((eq last-char 40) ; 40 (
@@ -827,7 +828,8 @@
    ;;  (when (string-prefix-p indentation (get-current-line))
    ;;    (if (eq last-char 40) ; 40 (
    ;; 	  (set-insertion-template)
-   ;; 	(set-standard-template-continued))))))
+   ;; 	(set-standard-template-continued)))))
+)
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -853,9 +855,10 @@
    ((eq (get-style (get-current-line)) persons-style)
     (setq current-on-enter-function 'person-on-enter-function))
    ((eq (get-style (get-current-line)) persons-standalone-style)
-    (setq current-on-enter-function '    person-standalone-on-enter-function))
+    (setq current-on-enter-function 'person-standalone-on-enter-function))
    ((eq (get-style (get-current-line)) standard-style)
-    (setq current-on-enter-function 'standard-on-enter-function))
+    (unless (eq current-on-enter-function 'standard-person-braces-on-enter-function)
+      (setq current-on-enter-function 'standard-person-on-enter-function)))
    ((eq (get-style (get-current-line)) standard-interrupted-style)
     (setq current-on-enter-function 'standard-interrupted-on-enter-function))))
 
@@ -884,19 +887,19 @@
   ;;
   ;; Disable distractions
   ;;
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+  ;; (menu-bar-mode -1)
+  ;; (tool-bar-mode -1)
+  ;; (scroll-bar-mode -1)
 
   (setq truncate-lines nil)
   ;;
   ;; hiding mode-line completely aligns last line to the left (bug?).
   ;; Simply setting back- and foreground to black creates an empty black line on the bottom.
   ;;
-  (setq mode-line-format "")
-  (set-face-foreground 'mode-line          background-color)
-  (set-face-background 'mode-line          background-color)
-  (set-face-background 'mode-line-inactive background-color)
+  ;; (setq mode-line-format "")
+  ;; (set-face-foreground 'mode-line          background-color)
+  ;; (set-face-background 'mode-line          background-color)
+  ;; (set-face-background 'mode-line-inactive background-color)
 
   (set-face-background 'default            background-color)
   (set-face-foreground 'default            foreground-color)
