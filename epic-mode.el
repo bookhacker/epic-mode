@@ -66,7 +66,7 @@
 ;;; ---------------------------------------------------------
 ;;;
 (defun extract-plot-headings ()
-  "Extracts all plot relevant headings (Headings, location, person)."
+  "Extracts all plot relevant headings (Headings, location person)."
   (interactive)
   (setq lines-iterated 0)
   (save-excursion
@@ -249,8 +249,7 @@
   (setq selected-template         location-template)
   (setq current-output-function   'location-output-function)
   (setq current-on-enter-function 'location-on-enter-function)
-  (setq last-char "")
-  (setq uppercase-input t)
+  ;;  (setq uppercase-input t)
   (when (eq show-current-output-function t)
     (display-current-output-function)))
 
@@ -916,10 +915,14 @@
   ;; font-lock
   ;;
   (setq epic-mode-keywords '((";;;[a-zäöüßÖÄÜß A-Z-=0-9.:-]*" . font-lock-string-face)
-				  ("#.*?#"           . font-lock-keyword-face)
-                                  ("\\[.*?\\]"       . font-lock-function-name-face)
-				  ("^(.*?)$"         . font-lock-keyword-face)
-				  ("^  (.*?)$"       . font-lock-keyword-face)))
+			     ("#.*?#"           . font-lock-keyword-face)
+			     ("\\[.*?\\]"       . font-lock-function-name-face)
+			     ("^(.*?)$"         . font-lock-keyword-face)
+			     ("^  (.*?)$"       . font-lock-keyword-face)
+			     ;; ("^* "             . org-level-1)
+			     ;; ("^** "            . org-level-2)
+			     ;; ("^*** "           . org-level-3)
+))
 
   ;;
   ;; Center text input and 60 charachters per line through window margins
