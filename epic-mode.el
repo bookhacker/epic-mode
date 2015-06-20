@@ -25,6 +25,7 @@
 (defvar   previous-input                           0)
 (defvar   italics-input                            nil)
 (defvar   last-selected-template                   no-template-selected)
+(defvar   selected-template                        no-template-selected)
 (defvar   footnote-index                           1)
 (defvar   selected-style                           nil)
 (defconst error-in-style                           "error in style")
@@ -796,9 +797,9 @@
    ((eq (get-style (get-current-line)) persons-standalone-style)
     (set-person-standalone-template))
    ((eq (get-style (get-current-line)) standard-style)
-    (set-standard-style))
+    (set-standard-template))
    ((eq (get-style (get-current-line)) standard-interrupted-style)
-    (set-standard-interrupted-style))))
+    (set-standard-template-continued))))
 
 
    ;;  (if (string-prefix-p indentation (get-current-line))
@@ -1047,6 +1048,7 @@
        (eq this-command 'scroll-up-command)
        (eq this-command 'scroll-down-command)
        (eq this-command 'undo))
+    (deinitialize-template)
     (initialize-template)
     (when display-selected-style
       (display-selected-style))))
