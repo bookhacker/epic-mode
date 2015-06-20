@@ -567,121 +567,121 @@
     (newline)
     (setq previous-input 13)))
 
-;;; ---------------------------------------------------------
-;;;
-(defun get-current-line-template ()
-  "Selects the according template at cursor position."
-  (save-excursion
-    (setq current-line (get-current-line))
-    (cond
-     ;; In standard-template in line with indentation at the beginning.
-     ((and (eq (string-prefix-p indentation current-line) t)
-	   (not (eq (string-prefix-p "  (" current-line) t)))
-      (setq selected-template standard-template)
-      (setq current-on-enter-function 'standard-on-enter-function)
-      (setq current-output-function   'standard-text-output-function)
-      (if (and (eq (string= indentation current-line) t)
-	       (not (eq (string= "  (" current-line) t)))
-	  (setq last-char 13)
-	(setq last-char 0)))
-     (t
-      (cond
-       	 ;; insertion-template
-	 ((or (eq (string-prefix-p "  (" current-line) t)
-	      (and (eq (string-prefix-p "(" current-line) t)
-		   (not (eq (string-prefix-p "(c)" current-line) t))))
-	  (set-insertion-template))
-	 (t
-	  (setq selected-template-string      "")
-	  (setq last-selected-template-string "")
-	  (setq marker-found                  nil)
-	  (setq lines-iterated 0)
-	  (while (eq marker-found nil)     
-	    (cond
-	     ;; header marker
-	     ((eq (string= current-line header-marker) t)
-	      (setq marker-found t)
-	      (setq selected-template header-template)
-	      (setq current-output-function 'header-output-function)
-	      (setq current-on-enter-function 'header-on-enter-function))
-	     ;; legal notice marker
-	     ((eq (string= current-line legal-notice-marker) t)
-	      (setq marker-found t)
-	      (setq selected-template legal-notice-template)
-	      (setq current-output-function   'legal-notice-text-output-function)
-	      (setq current-on-enter-function 'legal-notice-on-enter-function))	      
-	     ;; heading-marker
-	     ((eq (string= current-line heading-marker) t)
-	      (setq marker-found t)
-	      (cond
-	       ;; first line after heading-marker is heading-template
-	       ;; why does this work (see below location-template (= lines-iterated -1) ...
-	       ((or (= lines-iterated 0)
-		    (= lines-iterated -1))		    
-		(setq selected-template         heading-template)
-		(setq current-output-function   'heading-chapter-output-function)
-		(setq current-on-enter-function 'heading-chapter-on-enter-function)
-		(when (eq (string= current-line "") t)
-		  (setq uppercase-input t)))
-	       ;; second line after heading-marker is location-template
-	       ((= lines-iterated -2)
-		(setq last-selected-template heading-template)
-		(set-location-template))
-	       ;; third line after heading-marker is person-template
-	       ((= lines-iterated -3)
-		(setq last-selected-template location-template)
-		(set-person-template))))
-	     ;; after template-marker
-	     ((eq (string= current-line standard-template-marker) t)
-	      (setq marker-found              t)
-	      (setq selected-template         standard-template)
-	      (setq last-selected-template    standard-template)
-	      (setq current-output-function   'standard-output-function)
-	      (setq current-on-enter-function 'standard-on-enter-function)
-	      (setq last-char                 0))
-	     ;; after location-marker
-	     ((eq (string= current-line location-template-marker) t)
-	      (setq marker-found t)
-	      (cond
-	       ;; first line after location-marker is location-template
-	       ((= lines-iterated -1)
-		(setq selected-template         location-template)
-		(setq current-output-function   'location-output-function)
-		(setq current-on-enter-function 'location-on-enter-function)
-		;; ... and this not (see above heading-template (= lines-iterated -1)?
-		;;	  (when (eq (string= current-line "") t)
-		;;	    (setq uppercase-input t))
-		)
-	       ((= lines-iterated -2)
-		(setq last-selected-template location-template)
-		(set-person-template))))	     
-	     ;; person template
-	     ((eq (string= current-line person-template-marker) t)
-	      (setq marker-found t)
-	      (setq selected-template         person-template)
-	      (setq current-output-function   'person-output-function)
-	      (setq current-on-enter-function 'person-on-enter-function))
-	     ;; personae marker
-	     ((eq (string= current-line personae-marker) t)
-	      (setq marker-found t)
-	      (setq selected-template         personae-template)
-	      (setq current-output-function   'personae-output-function)
-	      (setq current-on-enter-function 'personae-on-enter-function))
-	     ;; plot marker
-	     ((eq (string= current-line plot-marker) t)
-	      (setq marker-found t)
-	      (setq selected-template plot-template)
-	      (setq current-output-function   'plot-output-function)
-	      (setq current-on-enter-function 'plot-on-enter-function))
-	     ;; wiki marker
-	     ((eq (string= current-line wiki-start-marker) t)
-	      (setq marker-found t)
-	      (setq selected-template wiki-template)
-	      (setq current-output-function   'wiki-output-function)
-	      (setq current-on-enter-function 'wiki-on-enter-function)))
-	    (forward-line -1)
-	    (setq lines-iterated (- lines-iterated 1))
-	    (setq current-line (get-current-line)))))))))
+;; ;;; ---------------------------------------------------------
+;; ;;;
+;; (defun get-current-line-template ()
+;;   "Selects the according template at cursor position."
+;;   (save-excursion
+;;     (setq current-line (get-current-line))
+;;     (cond
+;;      ;; In standard-template in line with indentation at the beginning.
+;;      ((and (eq (string-prefix-p indentation current-line) t)
+;; 	   (not (eq (string-prefix-p "  (" current-line) t)))
+;;       (setq selected-template standard-template)
+;;       (setq current-on-enter-function 'standard-on-enter-function)
+;;       (setq current-output-function   'standard-text-output-function)
+;;       (if (and (eq (string= indentation current-line) t)
+;; 	       (not (eq (string= "  (" current-line) t)))
+;; 	  (setq last-char 13)
+;; 	(setq last-char 0)))
+;;      (t
+;;       (cond
+;;        	 ;; insertion-template
+;; 	 ((or (eq (string-prefix-p "  (" current-line) t)
+;; 	      (and (eq (string-prefix-p "(" current-line) t)
+;; 		   (not (eq (string-prefix-p "(c)" current-line) t))))
+;; 	  (set-insertion-template))
+;; 	 (t
+;; 	  (setq selected-template-string      "")
+;; 	  (setq last-selected-template-string "")
+;; 	  (setq marker-found                  nil)
+;; 	  (setq lines-iterated 0)
+;; 	  (while (eq marker-found nil)     
+;; 	    (cond
+;; 	     ;; header marker
+;; 	     ((eq (string= current-line header-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (setq selected-template header-template)
+;; 	      (setq current-output-function 'header-output-function)
+;; 	      (setq current-on-enter-function 'header-on-enter-function))
+;; 	     ;; legal notice marker
+;; 	     ((eq (string= current-line legal-notice-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (setq selected-template legal-notice-template)
+;; 	      (setq current-output-function   'legal-notice-text-output-function)
+;; 	      (setq current-on-enter-function 'legal-notice-on-enter-function))	      
+;; 	     ;; heading-marker
+;; 	     ((eq (string= current-line heading-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (cond
+;; 	       ;; first line after heading-marker is heading-template
+;; 	       ;; why does this work (see below location-template (= lines-iterated -1) ...
+;; 	       ((or (= lines-iterated 0)
+;; 		    (= lines-iterated -1))		    
+;; 		(setq selected-template         heading-template)
+;; 		(setq current-output-function   'heading-chapter-output-function)
+;; 		(setq current-on-enter-function 'heading-chapter-on-enter-function)
+;; 		(when (eq (string= current-line "") t)
+;; 		  (setq uppercase-input t)))
+;; 	       ;; second line after heading-marker is location-template
+;; 	       ((= lines-iterated -2)
+;; 		(setq last-selected-template heading-template)
+;; 		(set-location-template))
+;; 	       ;; third line after heading-marker is person-template
+;; 	       ((= lines-iterated -3)
+;; 		(setq last-selected-template location-template)
+;; 		(set-person-template))))
+;; 	     ;; after template-marker
+;; 	     ((eq (string= current-line standard-template-marker) t)
+;; 	      (setq marker-found              t)
+;; 	      (setq selected-template         standard-template)
+;; 	      (setq last-selected-template    standard-template)
+;; 	      (setq current-output-function   'standard-output-function)
+;; 	      (setq current-on-enter-function 'standard-on-enter-function)
+;; 	      (setq last-char                 0))
+;; 	     ;; after location-marker
+;; 	     ((eq (string= current-line location-template-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (cond
+;; 	       ;; first line after location-marker is location-template
+;; 	       ((= lines-iterated -1)
+;; 		(setq selected-template         location-template)
+;; 		(setq current-output-function   'location-output-function)
+;; 		(setq current-on-enter-function 'location-on-enter-function)
+;; 		;; ... and this not (see above heading-template (= lines-iterated -1)?
+;; 		;;	  (when (eq (string= current-line "") t)
+;; 		;;	    (setq uppercase-input t))
+;; 		)
+;; 	       ((= lines-iterated -2)
+;; 		(setq last-selected-template location-template)
+;; 		(set-person-template))))	     
+;; 	     ;; person template
+;; 	     ((eq (string= current-line person-template-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (setq selected-template         person-template)
+;; 	      (setq current-output-function   'person-output-function)
+;; 	      (setq current-on-enter-function 'person-on-enter-function))
+;; 	     ;; personae marker
+;; 	     ((eq (string= current-line personae-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (setq selected-template         personae-template)
+;; 	      (setq current-output-function   'personae-output-function)
+;; 	      (setq current-on-enter-function 'personae-on-enter-function))
+;; 	     ;; plot marker
+;; 	     ((eq (string= current-line plot-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (setq selected-template plot-template)
+;; 	      (setq current-output-function   'plot-output-function)
+;; 	      (setq current-on-enter-function 'plot-on-enter-function))
+;; 	     ;; wiki marker
+;; 	     ((eq (string= current-line wiki-start-marker) t)
+;; 	      (setq marker-found t)
+;; 	      (setq selected-template wiki-template)
+;; 	      (setq current-output-function   'wiki-output-function)
+;; 	      (setq current-on-enter-function 'wiki-on-enter-function)))
+;; 	    (forward-line -1)
+;; 	    (setq lines-iterated (- lines-iterated 1))
+;; 	    (setq current-line (get-current-line)))))))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -919,9 +919,9 @@
 			     ("\\[.*?\\]"       . font-lock-function-name-face)
 			     ("^(.*?)$"         . font-lock-keyword-face)
 			     ("^  (.*?)$"       . font-lock-keyword-face)
-			     ;; ("^* "             . org-level-1)
-			     ;; ("^** "            . org-level-2)
-			     ;; ("^*** "           . org-level-3)
+			     ("^\\* .*"         . font-lock-builtin-face)
+			     ("^\\*\\* .*"      . font-lock-comment-face)
+			     ("^\\*\\*\\* .*"   . font-lock-keyword-face)
 ))
 
   ;;
