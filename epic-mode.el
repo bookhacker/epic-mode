@@ -801,8 +801,8 @@
     (set-standard-template))
    ((eq (get-style (get-current-line)) standard-interrupted-style)
     (set-standard-template-continued))
-
-
+  ((eq (get-style (get-current-line)) insertion-style)
+   (set-insertion-template))
    ;;  (if (string-prefix-p indentation (get-current-line))
    ;; 	(set-standard-template-continued)
    ;;    (set-standard-template)))
@@ -814,8 +814,8 @@
    (set-standard-template)))
    ;;   ((eq (is-uppercase-letter last-char) t)
    ;;    (set-person-template))
-   ;;   ((eq last-char 40) ; 40 (
-   ;;    (set-insertion-template))
+     ;; ((eq last-char 40) ; 40 (
+     ;;  (set-insertion-template))
    ;;   ((and
    ;;     (eq previous-input 13)
    ;;     (eq last-char 49)) ; 49 1
@@ -888,9 +888,9 @@
   ;;
   ;; Disable distractions
   ;;
-  ;; (menu-bar-mode -1)
-  ;; (tool-bar-mode -1)
-  ;; (scroll-bar-mode -1)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
 
   (setq truncate-lines nil)
   ;;
@@ -898,9 +898,9 @@
   ;; Simply setting back- and foreground to black creates an empty black line on the bottom.
   ;;
   ;; (setq mode-line-format "")
-  ;; (set-face-foreground 'mode-line          background-color)
-  ;; (set-face-background 'mode-line          background-color)
-  ;; (set-face-background 'mode-line-inactive background-color)
+  (set-face-foreground 'mode-line          background-color)
+  (set-face-background 'mode-line          background-color)
+  (set-face-background 'mode-line-inactive background-color)
 
   (set-face-background 'default            background-color)
   (set-face-foreground 'default            foreground-color)
@@ -975,8 +975,8 @@
 ;;; --------------------------------------------------------
 ;;;
 (defun is-insertion-style (line)
-  "Returns if line has style of persons-standalone."
-  (if (string-prefix-p (concat indentation "(") line)
+  "Returns if line has style of insertion-style."
+  (if (string-prefix-p (concat indentation "(")line)
       t
     nil))
 
