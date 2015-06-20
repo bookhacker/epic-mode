@@ -920,9 +920,8 @@
 			     ("^(.*?)$"         . font-lock-keyword-face)
 			     ("^  (.*?)$"       . font-lock-keyword-face)
 			     ("^\\* .*"         . font-lock-builtin-face)
-			     ("^\\*\\* .*"      . font-lock-comment-face)
-			     ("^\\*\\*\\* .*"   . font-lock-keyword-face)
-))
+			     ("^\\*\\* .*"      . font-lock-builtin-face)
+			     ("^\\*\\*\\* .*"   . font-lock-builtin-face)))
 
   ;;
   ;; Center text input and 60 charachters per line through window margins
