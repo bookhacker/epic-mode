@@ -926,9 +926,10 @@
   ;;
   ;; Center text input and 60 charachters per line through window margins
   ;;
-  (add-hook 'window-configuration-change-hook
-  	    (lambda () (set-window-margins nil margin-left margin-right))
-  	    nil 'local)
+  (unless window-system
+    (add-hook 'window-configuration-change-hook
+	      (lambda () (set-window-margins nil margin-left margin-right))
+	      nil 'local))
 
   (setq word-wrap t)
 
