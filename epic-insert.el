@@ -21,6 +21,8 @@
 	(setq line (epic-insert-get-clean-insertion-style-line current-line)))
        ((epic-insert-is-standard-style current-line)
 	(setq line (epic-insert-get-clean-standard-style-line current-line)))
+       ((epic-insert-is-standard-continued-style current-line)
+	(setq line (epic-insert-get-clean-standard-continued-style-line current-line)))
 	
        )
 
@@ -63,6 +65,12 @@
 (defun epic-insert-is-standard-style (line)
   "Returns if line is standard-line."
   (string-match "^[a-zA-ZöäüÖÄÜ]" line))
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-is-standard-continued-style (line)
+  "Returns if line is standard-continued-line."
+  (eq (string-match "\s+[a-zA-ZöäüÖÄÜ]" line) 0))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -145,30 +153,6 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun epic-insert-get-clean-standard-style-line_ORIGINAL (line)
-  "Returns a cleaned standard-style-line."  
-  (setq line (string-single-spaces line))
-  (setq line (string-trim line))
-  (setq position (string-match "(" line))  
-  (if position
-      (progn
-       (setq index 0)
-       (setq new-line "")
-       (while (< index (string-width line))
-	 (setq current-char (aref line index))      
-	 (when (<= index position)
-	   (setq current-char (upcase current-char)))
-	 (setq new-line (concat new-line (char-to-string current-char)))
-	 (setq index (+ index 1)))
-       (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" new-line)
-	 (setq new-line (concat new-line ")")))
-       (when (string-match ")\\'" new-line)
-	 (setq new-line (concat new-line ".")))
-       new-line)   
-    line))
-
-;;; ---------------------------------------------------------
-;;;
 (ert-deftest epic-insert-test-is-insertion-style ()
   "Tests if line is insertion."
   (should (eq (epic-insert-is-insertion-style "(insertion") t))
@@ -188,6 +172,16 @@
   (should (eq (epic-insert-is-standard-style " ASDFsertion") nil))
   (should (eq (epic-insert-is-standard-style "(ASDFsertion") nil))
   (should (eq (epic-insert-is-standard-style "-ASDFsertion") nil)))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-is-standard-continued-style ()
+  "Tests if line is standard-style."
+  (should (eq (epic-insert-is-standard-continued-style " asdDFSDFfasdf") t))
+  (should (eq (epic-insert-is-standard-continued-style "                ASDFsertion") t))
+  (should (eq (epic-insert-is-standard-continued-style "ASDFsertion") nil))
+  (should (eq (epic-insert-is-standard-continued-style "  (ASDFsertion") nil))
+  (should (eq (epic-insert-is-standard-continued-style " *ASDFsertion") nil)))
 
 ;;; ---------------------------------------------------------
 ;;;
