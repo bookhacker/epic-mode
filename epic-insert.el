@@ -10,24 +10,30 @@
     (goto-char 0)
     (while (< (point) (point-max))
       (setq current-line (get-current-line))
-      (cond
-       ((is-heading-style current-line)
-	(setq line (epic-insert-get-clean-heading-style-line current-line)))
-       ((is-location-style current-line)
-	(setq line (epic-insert-get-clean-location-style-line current-line)))
-       ((is-persona-style current-line)
-	(setq line (epic-insert-get-clean-persona-style-line current-line)))
-       ((epic-insert-is-insertion-style current-line)
-	(setq line (epic-insert-get-clean-insertion-style-line current-line)))
-       ((epic-insert-is-standard-style current-line)
-	(setq line (epic-insert-get-clean-standard-style-line current-line)))
-       ((epic-insert-is-standard-continued-style current-line)
-	(setq line (epic-insert-get-clean-standard-continued-style-line current-line)))	
-       )
-
+      (unless (eq (string-trim current-line) "")
+	(cond
+	 ((is-heading-style current-line)
+	  (setq line (epic-insert-get-clean-heading-style-line current-line)))
+	 ((is-location-style current-line)
+	  (setq line (epic-insert-get-clean-location-style-line current-line)))
+	 ((epic-insert-is-persona-style current-line)
+	  (setq line (epic-insert-get-clean-persona-style-line current-line)))
+	 ((epic-insert-is-insertion-style current-line)
+	  (setq line (epic-insert-get-clean-insertion-style-line current-line)))
+	 ((epic-insert-is-standard-style current-line)
+	  (setq line (epic-insert-get-clean-standard-style-line current-line)))
+	 ((epic-insert-is-standard-continued-style current-line)
+	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line)))	
+	 ))
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
       (message (concat "lines-iterated: " (number-to-string lines-iterated))))))
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-is-persona-style (line)
+  "Returns if line has style of persons."
+  (string-prefix-p "*** " line))
 
 ;;; ---------------------------------------------------------
 ;;;
