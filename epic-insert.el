@@ -19,6 +19,8 @@
 	(setq line (epic-insert-get-clean-persona-style-line current-line)))
        ((epic-insert-is-insertion-style current-line)
 	(setq line (epic-insert-get-clean-insertion-style-line current-line)))
+       ((epic-insert-is-standard-style current-line)
+	(setq line (epic-insert-get-clean-standard-style-line current-line)))
 	
        )
 
@@ -55,6 +57,12 @@
   (setq temp-line line)
   (setq temp-line (string-trim temp-line))
   (string-prefix-p "(" temp-line))
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-is-standard-style (line)
+  "Returns if line is standard-line."
+  (string-match "^[a-zA-ZöäüÖÄÜ]" line))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -95,7 +103,69 @@
   (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
     (setq line (concat line ".")))
   (when (string-match "\\.\\'" line)
-    (setq line (concat line ")"))))
+    (setq line (concat line ")")))
+  line)
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-get-clean-standard-style-line (line)
+  "Returns a cleaned standard-style-line."  
+  (setq line (string-single-spaces line))
+  (setq line (string-trim line))
+  (setq position (string-match "(" line))  
+  (if position
+      (progn
+       (setq index 0)
+       (setq new-line "")
+       (while (< index (string-width line))
+	 (setq current-char (aref line index))      
+	 (when (<= index position)
+	   (setq current-char (upcase current-char)))
+	 (setq new-line (concat new-line (char-to-string current-char)))
+	 (setq index (+ index 1)))
+       (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" new-line)
+	 (setq new-line (concat new-line ")")))
+       (when (string-match ")\\'" new-line)
+	 (setq new-line (concat new-line ".")))
+       new-line)
+    (setq position (string-match "\\." line))
+    (if position
+	(progn
+	  (setq index 0)
+	  (setq new-line "")
+	  (while (< index (string-width line))
+	    (setq current-char (aref line index))      
+	    (when (<= index position)
+	      (setq current-char (upcase current-char)))
+	    (setq new-line (concat new-line (char-to-string current-char)))
+	    (setq index (+ index 1)))   
+	  new-line)
+      (message "Error in epic-insert-get-clean-standard-style-line (line): position is nil.")
+      (debug))))
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-get-clean-standard-style-line_ORIGINAL (line)
+  "Returns a cleaned standard-style-line."  
+  (setq line (string-single-spaces line))
+  (setq line (string-trim line))
+  (setq position (string-match "(" line))  
+  (if position
+      (progn
+       (setq index 0)
+       (setq new-line "")
+       (while (< index (string-width line))
+	 (setq current-char (aref line index))      
+	 (when (<= index position)
+	   (setq current-char (upcase current-char)))
+	 (setq new-line (concat new-line (char-to-string current-char)))
+	 (setq index (+ index 1)))
+       (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" new-line)
+	 (setq new-line (concat new-line ")")))
+       (when (string-match ")\\'" new-line)
+	 (setq new-line (concat new-line ".")))
+       new-line)   
+    line))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -108,6 +178,16 @@
   (should (eq (epic-insert-is-insertion-style "                              (insertion") t))
   (should (eq (epic-insert-is-insertion-style "  insertion") nil))
   (should (eq (epic-insert-is-insertion-style "inser(tion") nil)))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-is-standard-style ()
+  "Tests if line is standard-style."
+  (should (not (eq (epic-insert-is-standard-style "asdDFSDFfasdf") nil)))
+  (should (not (eq (epic-insert-is-standard-style "ASDFsertion") nil)))
+  (should (eq (epic-insert-is-standard-style " ASDFsertion") nil))
+  (should (eq (epic-insert-is-standard-style "(ASDFsertion") nil))
+  (should (eq (epic-insert-is-standard-style "-ASDFsertion") nil)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -138,6 +218,15 @@
   "Test for clean insertion-style line."
   (should (string-equal (epic-insert-get-clean-insertion-style-line "          (insertion     insertion.       insertion") (concat indentation "(insertion insertion. insertion.)")))
   (should (string-equal (epic-insert-get-clean-insertion-style-line "(insertion     insertion.       insertion.") (concat indentation "(insertion insertion. insertion.)"))))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-get-clean-standard-style-line ()
+  "Test for clean standard-style line."
+  (should (string-equal (epic-insert-get-clean-standard-style-line "abc (asdf") "ABC (asdf)."))
+  (should (string-equal (epic-insert-get-clean-standard-style-line "abc.  asdf") "ABC. asdf"))
+  (should (string-equal (epic-insert-get-clean-standard-style-line "ABC (asdf") "ABC (asdf)."))  
+  (should (string-equal (epic-insert-get-clean-standard-style-line "ABC. asdf asdf asdf") "ABC. asdf asdf asdf")))
 
 ;;; ---------------------------------------------------------
 ;;;
