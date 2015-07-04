@@ -16,8 +16,10 @@
        ((is-location-style current-line)
 	(setq line (epic-insert-get-clean-location-style-line current-line)))
        ((is-persona-style current-line)
-
-	)
+	(setq line (epic-insert-get-clean-persona-style-line current-line)))
+       ((epic-insert-is-insertion-style current-line)
+	(setq line (epic-insert-get-clean-insertion-style-line current-line)))
+	
        )
 
       ;;
@@ -48,9 +50,16 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun epic-insert-is-insertion-style (line)
+  "Returns if line is insertion-line."
+  (setq temp-line line)
+  (setq temp-line (string-trim temp-line))
+  (string-prefix-p "(" temp-line))
+
+;;; ---------------------------------------------------------
+;;;
 (defun epic-insert-get-clean-heading-style-line (line)
   "Returns a cleaned heading-style-line."  
-  (interactive)
   (setq line (string-single-spaces line))
   (setq line (string-trim line))
   (setq line (upcase line))
@@ -60,12 +69,45 @@
 ;;;
 (defun epic-insert-get-clean-location-style-line (line)
   "Returns a cleaned heading-style-line."  
-  (interactive)
   (setq line (string-single-spaces line))
   (setq line (string-trim line))
   (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
     (setq line (concat line ".")))
   line)
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-get-clean-persona-style-line (line)
+  "Returns a cleaned heading-style-line."  
+  (setq line (string-single-spaces line))
+  (setq line (string-trim line))
+  (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
+    (setq line (concat line ".")))
+  line)
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-get-clean-insertion-style-line (line)
+  "Returns a cleaned insertion-style-line."  
+  (setq line (string-single-spaces line))
+  (setq line (string-trim line))
+  (setq line (concat indentation line))
+  (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
+    (setq line (concat line ".")))
+  (when (string-match "\\.\\'" line)
+    (setq line (concat line ")"))))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-is-insertion-style ()
+  "Tests if line is insertion."
+  (should (eq (epic-insert-is-insertion-style "(insertion") t))
+  (should (eq (epic-insert-is-insertion-style " (insertion") t))
+  (should (eq (epic-insert-is-insertion-style "  (insertion") t))
+  (should (eq (epic-insert-is-insertion-style "   (insertion") t))
+  (should (eq (epic-insert-is-insertion-style "                              (insertion") t))
+  (should (eq (epic-insert-is-insertion-style "  insertion") nil))
+  (should (eq (epic-insert-is-insertion-style "inser(tion") nil)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -83,6 +125,19 @@
   "Test for clean location-style line."
   (should (string-equal (epic-insert-get-clean-location-style-line "** Location Location Location.") "** Location Location Location."))
   (should (string-equal (epic-insert-get-clean-location-style-line "** Location          Location. Location") "** Location Location. Location.")))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-get-clean-persona-style-line ()
+  "Test for clean persona-style line."
+  (should (string-equal (epic-insert-get-clean-persona-style-line "***   PERSONA.      Persona   ") "*** PERSONA. Persona.")))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-get-clean-insertion-style-line ()
+  "Test for clean insertion-style line."
+  (should (string-equal (epic-insert-get-clean-insertion-style-line "          (insertion     insertion.       insertion") (concat indentation "(insertion insertion. insertion.)")))
+  (should (string-equal (epic-insert-get-clean-insertion-style-line "(insertion     insertion.       insertion.") (concat indentation "(insertion insertion. insertion.)"))))
 
 ;;; ---------------------------------------------------------
 ;;;
