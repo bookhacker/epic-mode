@@ -22,35 +22,12 @@
        ((epic-insert-is-standard-style current-line)
 	(setq line (epic-insert-get-clean-standard-style-line current-line)))
        ((epic-insert-is-standard-continued-style current-line)
-	(setq line (epic-insert-get-clean-standard-continued-style-line current-line)))
-	
+	(setq line (epic-insert-get-clean-standard-continued-style-line current-line)))	
        )
 
-      ;;
-      ;; Prefixe
-      ;; "* " - HEADING
-      ;; "** " - LOCATION
-      ;; "*** " - PERSONA
-      ;; "(" - Einschub
-      ;; ^[A-Za-zöäüÖÄÜ ]* - Standard
-      ;; ^[" "]*[a-zA-ZöäüÖÄÜ]*
-      
-;;      (setq current-style (get-style current-line))
-      ;; (when (or
-      ;; 	     (eq current-style heading-style)
-      ;; 	     (eq current-style location-style)
-      ;; 	     (eq current-style persons-style))
-      ;; 	(with-current-buffer (get-buffer-create plot-buffer-name)
-      ;; 	  (insert (get-line-without-footnotes current-line))
-      ;; 	  (newline)
-      ;; 	  (when (eq current-style persons-style)
-      ;; 	    (newline)
-      ;; 	    (newline)
-      ;; 	    (newline))))
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
-      (message (concat "lines-iterated: " (number-to-string lines-iterated)))))
-  )
+      (message (concat "lines-iterated: " (number-to-string lines-iterated))))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -64,7 +41,7 @@
 ;;;
 (defun epic-insert-is-standard-style (line)
   "Returns if line is standard-line."
-  (string-match "^[a-zA-ZöäüÖÄÜ]" line))
+  (eq (string-match "^[a-zA-ZöäüÖÄÜ]" line) 0))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -153,6 +130,14 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun epic-insert-get-clean-standard-continued-style-line (line)
+  "Returns a cleaned standard-continuedstyle-line."  
+  (setq line (string-single-spaces line))
+  (setq line (string-trim line))
+  (setq line (concat indentation line)))
+
+;;; ---------------------------------------------------------
+;;;
 (ert-deftest epic-insert-test-is-insertion-style ()
   "Tests if line is insertion."
   (should (eq (epic-insert-is-insertion-style "(insertion") t))
@@ -166,6 +151,16 @@
 ;;; ---------------------------------------------------------
 ;;;
 (ert-deftest epic-insert-test-is-standard-style ()
+  "Tests if line is standard-style."
+  (should (eq (epic-insert-is-standard-style "asdDFSDFfasdf") t))
+  (should (eq (epic-insert-is-standard-style "ASDFsertion") t))
+  (should (eq (epic-insert-is-standard-style " ASDFsertion") nil))
+  (should (eq (epic-insert-is-standard-style "(ASDFsertion") nil))
+  (should (eq (epic-insert-is-standard-style "-ASDFsertion") nil)))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-is-standard-style_ORIGINAL ()
   "Tests if line is standard-style."
   (should (not (eq (epic-insert-is-standard-style "asdDFSDFfasdf") nil)))
   (should (not (eq (epic-insert-is-standard-style "ASDFsertion") nil)))
@@ -221,6 +216,13 @@
   (should (string-equal (epic-insert-get-clean-standard-style-line "abc.  asdf") "ABC. asdf"))
   (should (string-equal (epic-insert-get-clean-standard-style-line "ABC (asdf") "ABC (asdf)."))  
   (should (string-equal (epic-insert-get-clean-standard-style-line "ABC. asdf asdf asdf") "ABC. asdf asdf asdf")))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-get-clean-standard-continued-style-line ()
+  "Returns a formatted standard-continued-style line."
+  (should (string-equal (epic-insert-get-clean-standard-continued-style-line "                     asdf asdf asdf") "  asdf asdf asdf"))
+  (should (string-equal (epic-insert-get-clean-standard-continued-style-line " asdf asdf asdf") "  asdf asdf asdf")))
 
 ;;; ---------------------------------------------------------
 ;;;
