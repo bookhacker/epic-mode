@@ -12,14 +12,11 @@
       (setq current-line (get-current-line))
       (cond
        ((is-heading-style current-line)
-	(setq line (epic-insert-get-clean-heading-style-line current-line))
-	(debug)
-	)
+	(setq line (epic-insert-get-clean-heading-style-line current-line)))
        ((is-location-style current-line)
-	(debug)
-	)
+	(setq line (epic-insert-get-clean-location-style-line current-line)))
        ((is-persona-style current-line)
-	(debug)
+
 	)
        )
 
@@ -61,12 +58,31 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun epic-insert-get-clean-location-style-line (line)
+  "Returns a cleaned heading-style-line."  
+  (interactive)
+  (setq line (string-single-spaces line))
+  (setq line (string-trim line))
+  (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
+    (setq line (concat line ".")))
+  line)
+
+;;; ---------------------------------------------------------
+;;;
 (ert-deftest epic-insert-test-get-clean-heading-style-line ()
-  "Generic test."
+  "Tests for clean heading-style line."
   (should (string-equal (epic-insert-get-clean-heading-style-line "* Full Heading") "* FULL HEADING"))
+  (should (string-equal (epic-insert-get-clean-heading-style-line "* Full Heading - further text") "* FULL HEADING - FURTHER TEXT"))
   (should (string-equal (epic-insert-get-clean-heading-style-line "     * Full Heading       ") "* FULL HEADING"))
   (should (string-equal (epic-insert-get-clean-heading-style-line "   *     Full         HeaDIng    ") "* FULL HEADING"))
   (should (string-equal (epic-insert-get-clean-heading-style-line "   *     Full         HeaDIng       - furTHER text  ") "* FULL HEADING - FURTHER TEXT")))
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-get-clean-location-style-line ()
+  "Test for clean location-style line."
+  (should (string-equal (epic-insert-get-clean-location-style-line "** Location Location Location.") "** Location Location Location."))
+  (should (string-equal (epic-insert-get-clean-location-style-line "** Location          Location. Location") "** Location Location. Location.")))
 
 ;;; ---------------------------------------------------------
 ;;;
