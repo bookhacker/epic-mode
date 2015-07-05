@@ -52,6 +52,11 @@
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "** "))
   ;; ---------------------------------------------------------
+  ;; "Persona "
+  (setq search-string-regexp "Persona\\ ")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "*** "))
+  ;; ---------------------------------------------------------
   ;; "Einschub"
   (setq search-string-regexp "Einschub[\\ ]*")
   (while (search-in-buffer search-string-regexp)
