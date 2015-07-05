@@ -1,10 +1,24 @@
 ;;;; -*- mode:emacs-lisp;coding:utf-8 -*-
+(defconst edit-buffer-name "epic-edit")
+
 ;;; ---------------------------------------------------------
 ;;;
 (defun epic-insert-text-file (filename)
   "Inserts and formats a text-file in current-buffer."
+  (when (get-buffer edit-buffer-name)
+    (kill-buffer edit-buffer-name))
   (interactive "FFind file: ")
   (switch-to-buffer (find-file-noselect filename))
+  ;;
+  ;; Replace commands like enter, backspace etc.
+  ;;
+  ;;  replace "enter"
+  (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "\n "))
+  ;;
+  ;; Clean up
+  ;;
   (setq lines-iterated 0)
   (save-excursion
     (goto-char (point-min))      
@@ -23,15 +37,19 @@
 	 ((epic-insert-is-standard-style current-line)
 	  (setq line (epic-insert-get-clean-standard-style-line current-line)))
 	 ((epic-insert-is-standard-continued-style current-line)
-	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line)))	
-	 ))
+	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))))
+	(epic-insert-edit-buffer-insert line))
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
-      (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated))))    
-    ;;  replace "enter"
-    (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
-    (while (search-in-buffer search-string-regexp)
-      (replace-in-buffer search-string-regexp "\n "))))
+      (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated)))))
+  (switch-to-buffer edit-buffer-name))
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-edit-buffer-insert (line)
+  "Inserts line into edit buffer."
+  (with-current-buffer (get-buffer-create edit-buffer-name)
+    (insert line)(newline)))
 
 ;;; ---------------------------------------------------------
 ;;;
