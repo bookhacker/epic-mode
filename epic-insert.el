@@ -16,11 +16,16 @@
   (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n "))
+  ;; replace "Location"
+  (setq search-string-regexp "Location\\ ")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "** "))
   ;;
   ;; Clean up
   ;;
   (setq lines-iterated 0)
   (save-excursion
+    (setq previous-line "")
     (goto-char (point-min))      
     (while (< (point) (point-max))
       (setq line "")
@@ -29,10 +34,16 @@
 	(cond
 	 ((is-heading-style current-line)
 	  (setq line (epic-insert-get-clean-heading-style-line current-line)))
-	 ((is-location-style current-line)
-	  (setq line (epic-insert-get-clean-location-style-line current-line)))
+	 ((is-location-style current-line)	  
+	  (setq line (epic-insert-get-clean-location-style-line current-line))
+	  (unless (or (<= (point) 1)
+		      (is-heading-style previous-line))
+		  (setq line (concat "\n" line))))
 	 ((epic-insert-is-persona-style current-line)
-	  (setq line (epic-insert-get-clean-persona-style-line current-line)))
+	  (setq line (epic-insert-get-clean-persona-style-line current-line))
+	  (setq line (concat line "\n"))
+	  (unless (is-location-style previous-line)
+		  (setq line (concat "\n" line))))
 	 ((epic-insert-is-insertion-style current-line)
 	  (setq line (epic-insert-get-clean-insertion-style-line current-line)))
 	 ((epic-insert-is-standard-style current-line)
@@ -40,7 +51,8 @@
 	 ((epic-insert-is-standard-continued-style current-line)
 	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))))
 	(unless (string-equal line "")
-	  (epic-insert-edit-buffer-insert line)))
+	  (epic-insert-edit-buffer-insert line)
+	  (setq previous-line line)))
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
       (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated)))))
