@@ -98,7 +98,8 @@
 	 ;; standard-continued-style
 	 ((epic-insert-is-standard-continued-style current-line)
 	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))
-	  (when (is-standard-style previous-line)
+	  (when (or (is-standard-style previous-line)
+		    (is-insertion-style previous-line))
 	    (setq line (string-trim line))
 	    (setq line (string-capitalize-first-word line))
 	    (setq line (concat indentation line)))))
