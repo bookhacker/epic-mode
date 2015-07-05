@@ -28,8 +28,8 @@
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
       (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated))))
-    ;;  enter ersetzten
-    (setq search-string-regexp "\\ enter\\ ")
+    ;;  enter ersetzen
+    (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
     (while (search-in-buffer search-string-regexp)
       (replace-in-buffer search-string-regexp "\n "))))
 
