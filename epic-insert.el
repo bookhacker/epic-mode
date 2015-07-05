@@ -23,6 +23,7 @@
   (save-excursion
     (goto-char (point-min))      
     (while (< (point) (point-max))
+      (setq line "")
       (setq current-line (get-current-line))
       (unless (eq (string-trim current-line) "")
 	(cond
@@ -38,7 +39,8 @@
 	  (setq line (epic-insert-get-clean-standard-style-line current-line)))
 	 ((epic-insert-is-standard-continued-style current-line)
 	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))))
-	(epic-insert-edit-buffer-insert line))
+	(unless (string-equal line "")
+	  (epic-insert-edit-buffer-insert line)))
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
       (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated)))))
