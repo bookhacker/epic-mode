@@ -62,6 +62,11 @@
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "("))
   ;; ---------------------------------------------------------
+  ;; mutliple commas
+  (setq search-string-regexp ",,")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp ","))
+  ;; ---------------------------------------------------------
   ;; Clean up
   (setq lines-iterated 0)
   (save-excursion
