@@ -67,22 +67,34 @@
       (setq current-line (get-current-line))
       (unless (eq (string-trim current-line) "")
 	(cond
+	 ;; ------------------------------------------------
+	 ;; heading-style
 	 ((is-heading-style current-line)
 	  (setq line (epic-insert-get-clean-heading-style-line current-line)))
+	 ;; ------------------------------------------------
+	 ;; location-style
 	 ((is-location-style current-line)	  
 	  (setq line (epic-insert-get-clean-location-style-line current-line))
 	  (unless (or (<= (point) 1)
 		      (is-heading-style previous-line))
-		  (setq line (concat "\n" line))))
+	    (setq line (concat "\n" line))))
+	 ;; ------------------------------------------------
+	 ;; persona-style
 	 ((epic-insert-is-persona-style current-line)
 	  (setq line (epic-insert-get-clean-persona-style-line current-line))
 	  (setq line (concat line "\n"))
 	  (unless (is-location-style previous-line)
-		  (setq line (concat "\n" line))))
+	    (setq line (concat "\n" line))))
+ 	 ;; ------------------------------------------------
+	 ;; insertion-style
 	 ((epic-insert-is-insertion-style current-line)
 	  (setq line (epic-insert-get-clean-insertion-style-line current-line)))
+	 ;; ------------------------------------------------	 
+	 ;; standard-style
 	 ((epic-insert-is-standard-style current-line)
 	  (setq line (epic-insert-get-clean-standard-style-line current-line)))
+	 ;; ------------------------------------------------	 
+	 ;; standard-continued-style
 	 ((epic-insert-is-standard-continued-style current-line)
 	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))))
 	(unless (string-equal line "")
@@ -104,7 +116,9 @@
 ;;;
 (defun epic-insert-is-persona-style (line)
   "Returns if line has style of persons."
-  (string-prefix-p "*** " line))
+  (setq temp-line line)
+  (setq temp-line (string-trim temp-line))
+  (string-prefix-p "*** " temp-line))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -213,6 +227,25 @@
   (setq line (string-trim line))
   (setq line (concat indentation line)))
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ---------------------------------------------------------
+;;
+;;                            Tests
+;;
+;;; ---------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest epic-insert-test-is-persona-style ()
+  "Tests if line is persona-style."
+  (should (eq (epic-insert-is-persona-style "*** Persona") t))
+  (should (eq (epic-insert-is-persona-style "       *** Persona") t))
+  (should (eq (epic-insert-is-persona-style "**** Persona") nil))
+  (should (eq (epic-insert-is-persona-style " ** Persona") nil)))  
+
 ;;; ---------------------------------------------------------
 ;;;
 (ert-deftest epic-insert-test-is-insertion-style ()
@@ -231,16 +264,6 @@
   "Tests if line is standard-style."
   (should (eq (epic-insert-is-standard-style "asdDFSDFfasdf") t))
   (should (eq (epic-insert-is-standard-style "ASDFsertion") t))
-  (should (eq (epic-insert-is-standard-style " ASDFsertion") nil))
-  (should (eq (epic-insert-is-standard-style "(ASDFsertion") nil))
-  (should (eq (epic-insert-is-standard-style "-ASDFsertion") nil)))
-
-;;; ---------------------------------------------------------
-;;;
-(ert-deftest epic-insert-test-is-standard-style_ORIGINAL ()
-  "Tests if line is standard-style."
-  (should (not (eq (epic-insert-is-standard-style "asdDFSDFfasdf") nil)))
-  (should (not (eq (epic-insert-is-standard-style "ASDFsertion") nil)))
   (should (eq (epic-insert-is-standard-style " ASDFsertion") nil))
   (should (eq (epic-insert-is-standard-style "(ASDFsertion") nil))
   (should (eq (epic-insert-is-standard-style "-ASDFsertion") nil)))
@@ -276,7 +299,8 @@
 ;;;
 (ert-deftest epic-insert-test-get-clean-persona-style-line ()
   "Test for clean persona-style line."
-  (should (string-equal (epic-insert-get-clean-persona-style-line "***   PERSONA.      Persona   ") "*** PERSONA. Persona.")))
+  (should (string-equal (epic-insert-get-clean-persona-style-line "***   PERSONA.      Persona   ") "*** PERSONA. Persona."))
+  (should (string-equal (epic-insert-get-clean-persona-style-line "        ***   PERSONA.      Persona   ") "*** PERSONA. Persona.")))
 
 ;;; ---------------------------------------------------------
 ;;;
