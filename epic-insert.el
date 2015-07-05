@@ -269,7 +269,6 @@
 ;;
 ;; [From: http://ergoemacs.org/emacs/elisp_find_replace_text.html]
 ;;
-
 ;;; ---------------------------------------------------------
 ;;;
 (defun search-in-buffer (search-string-regexp)
