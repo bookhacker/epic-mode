@@ -203,6 +203,9 @@
   "Returns a cleaned heading-style-line."  
   (setq line (string-single-spaces line))
   (setq line (string-trim line))
+  (setq line (substring line (+ (string-match persona-style-prefix line) (string-width persona-style-prefix))))
+  (setq line (string-capitalize-first-word line))
+  (setq line (concat persona-style-prefix line))  
   (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
     (setq line (concat line ".")))
   line)
@@ -242,6 +245,11 @@
 	 (setq new-line (concat new-line ")")))
        (when (string-match ")\\'" new-line)
 	 (setq new-line (concat new-line ".")))
+       (when (string-suffix-p "." new-line)
+	 (unless (string-suffix-p ")." new-line)
+	   (setq new-line (concat (substring new-line 0 (- (string-width new-line) 1)) ")."))))
+
+       
        new-line)
     (setq position (string-match "\\." line))
     (if position

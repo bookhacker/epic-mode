@@ -40,8 +40,9 @@
 (defconst personae-file-name                       "personae")
 (defconst impressum-file-name                      "impressum")
 (defconst werbung-file-name                        "werbung.html")
-(defvar margin-left                                29)
-(defvar margin-right                               29)
+(defvar   margin-left                              29)
+(defvar   margin-right                             29)
+(defconst persona-style-prefix                     "*** ")
 
 ;;; ---------------------------------------------------------
 ;;;
