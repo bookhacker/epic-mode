@@ -7,7 +7,7 @@
   (switch-to-buffer (find-file-noselect filename))
   (setq lines-iterated 0)
   (save-excursion
-    (goto-char 0)
+    (goto-char (point-min))      
     (while (< (point) (point-max))
       (setq current-line (get-current-line))
       (unless (eq (string-trim current-line) "")
@@ -27,7 +27,15 @@
 	 ))
       (forward-line)
       (setq lines-iterated (+ lines-iterated 1))
-      (message (concat "lines-iterated: " (number-to-string lines-iterated))))))
+      (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated))))
+    ;;  enter ersetzten
+    (goto-char (point-min))
+    (setq search-string-regexp "\\ enter\\ ")
+    (while (search-forward-regexp search-string-regexp nil t)
+      (replace-in-buffer search-string-regexp "\n "))
+    
+
+    ))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -261,3 +269,17 @@
 (defun string-trim (s)
   "Remove whitespace at the beginning and end of S."
   (string-trim-left (string-trim-right s)))
+
+;;
+;; [From: http://ergoemacs.org/emacs/elisp_find_replace_text.html]
+;;
+
+;;; ---------------------------------------------------------
+;;;
+(defun replace-in-buffer (search-string-regexp replace-string)
+  "Idiom for string replacement in current buffer."
+  (let ((case-fold-search t)) ; or nil
+    (goto-char (point-min))
+    ;; if you need regexp, use search-forward-regexp
+    (while (search-forward-regexp search-string-regexp nil t)
+      (replace-match replace-string))))
