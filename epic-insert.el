@@ -65,7 +65,8 @@
     (while (< (point) (point-max))
       (setq line "")
       (setq current-line (get-current-line))
-      (unless (eq (string-trim current-line) "")
+      (unless (or (eq (string-trim current-line) "")
+		   (<= (string-width (string-trim current-line)) 1)) ; don't copy non-sense-lines with only one real char
 	(cond
 	 ;; ------------------------------------------------
 	 ;; heading-style
