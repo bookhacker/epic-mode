@@ -97,7 +97,13 @@
 	 ;; ------------------------------------------------	 
 	 ;; standard-continued-style
 	 ((epic-insert-is-standard-continued-style current-line)
-	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))))
+	  (setq line (epic-insert-get-clean-standard-continued-style-line current-line))
+	  (when (is-standard-style previous-line)
+	    (setq line (string-trim line))
+	    (setq line (string-capitalize-first-word line))
+	    (setq line (concat indentation line)))))
+	;; -------------------------------------------------
+	;; insert into edit-buffer
 	(unless (string-equal line "")
 	  (epic-insert-edit-buffer-insert line)
 	  (setq previous-line line)))
@@ -106,6 +112,16 @@
       (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated)))))
   (switch-to-buffer edit-buffer-name))
 
+;;; ---------------------------------------------------------
+;;;
+(defun string-capitalize-first-word (string)
+  "Capitalize first word of a string."
+  (setq temp-string (string-trim string))
+  (setq start (string-match " " string))
+  (setq first-word (substring temp-string 0 start))
+  (setq first-word (capitalize first-word))
+  (setq temp-string (concat first-word (substring temp-string start)))
+  temp-string)
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -246,6 +262,13 @@
 ;;; ---------------------------------------------------------
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;; ---------------------------------------------------------
+;;;
+(ert-deftest test-string-capitalize-first-word ()    
+  "Tests string-capitalize-first-word function."  
+  (should (string-equal (string-capitalize-first-word "dies ist ein Test.") "Dies ist ein Test."))
+  (should (string-equal (string-capitalize-first-word "... dies ist ein Test.") "... dies ist ein Test.")))
 
 ;;; ---------------------------------------------------------
 ;;;
