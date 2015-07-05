@@ -220,7 +220,7 @@
   (setq line (concat indentation line))
   (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
     (setq line (concat line ".")))
-  (when (string-match "\\.\\'" line)
+  (when (string-match "\\.\\|:\\'" line)    
     (setq line (concat line ")")))
   line)
 
