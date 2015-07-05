@@ -29,13 +29,9 @@
       (setq lines-iterated (+ lines-iterated 1))
       (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated))))
     ;;  enter ersetzten
-    (goto-char (point-min))
     (setq search-string-regexp "\\ enter\\ ")
-    (while (search-forward-regexp search-string-regexp nil t)
-      (replace-in-buffer search-string-regexp "\n "))
-    
-
-    ))
+    (while (search-in-buffer search-string-regexp)
+      (replace-in-buffer search-string-regexp "\n "))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -273,6 +269,14 @@
 ;;
 ;; [From: http://ergoemacs.org/emacs/elisp_find_replace_text.html]
 ;;
+
+;;; ---------------------------------------------------------
+;;;
+(defun search-in-buffer (search-string-regexp)
+  "Search in buffer for regexp."
+  (let ((case-fold-search t)) ; or nil
+    (goto-char (point-min))
+    (search-forward-regexp search-string-regexp nil t)))
 
 ;;; ---------------------------------------------------------
 ;;;
