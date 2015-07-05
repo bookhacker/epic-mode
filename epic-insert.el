@@ -15,12 +15,42 @@
   ;;  replace "enter"
   ;;  (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
   ;;(setq search-string-regexp "\\ enter[\\ -(]\\| enter$")
+  ;;
+  ;; " enter " and at end of line
+  ;;
   (setq search-string-regexp "\\ enter\\ \\| enter$")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n "))
+  ;;
+  ;; " enter("
+  ;;
   (setq search-string-regexp "\\ enter(")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n("))
+  ;;
+  ;; " enter…"
+  ;;
+  (setq search-string-regexp "\\ enter…")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "\n…"))
+  ;;
+  ;; " enter-"
+  ;;
+  (setq search-string-regexp "\\ enter-")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "\n-"))
+  ;;
+  ;; " enter?"
+  ;;
+  (setq search-string-regexp "\\ enter?")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "\n?"))
+  ;;
+  ;; " enter."
+  ;;
+  (setq search-string-regexp "\\ enter.")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "\n."))
   ;; replace "Location"
   (setq search-string-regexp "Location\\ ")
   (while (search-in-buffer search-string-regexp)
