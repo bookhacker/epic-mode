@@ -9,52 +9,53 @@
     (kill-buffer edit-buffer-name))
   (interactive "FFind file: ")
   (switch-to-buffer (find-file-noselect filename))
-  ;;
+  ;; ---------------------------------------------------------
   ;; Replace commands like enter, backspace etc.
-  ;;
-  ;;  replace "enter"
-  ;;  (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
-  ;;(setq search-string-regexp "\\ enter[\\ -(]\\| enter$")
-  ;;
+  ;; ---------------------------------------------------------
   ;; " enter " and at end of line
-  ;;
   (setq search-string-regexp "\\ enter\\ \\| enter$")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n "))
-  ;;
+  ;; ---------------------------------------------------------
   ;; " enter("
-  ;;
   (setq search-string-regexp "\\ enter(")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n("))
-  ;;
+  ;; ---------------------------------------------------------
   ;; " enter…"
-  ;;
   (setq search-string-regexp "\\ enter…")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n…"))
-  ;;
+  ;; ---------------------------------------------------------
   ;; " enter-"
-  ;;
   (setq search-string-regexp "\\ enter-")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n-"))
-  ;;
+  ;; ---------------------------------------------------------
   ;; " enter?"
-  ;;
   (setq search-string-regexp "\\ enter?")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n?"))
-  ;;
+  ;; ---------------------------------------------------------
   ;; " enter."
-  ;;
   (setq search-string-regexp "\\ enter.")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n."))
-  ;; replace "Location"
+  ;; ---------------------------------------------------------
+  ;; "Backspace"
+  (setq search-string-regexp "Backspace")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp ""))
+  ;; ---------------------------------------------------------
+  ;; "Location"
   (setq search-string-regexp "Location\\ ")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "** "))
+  ;; ---------------------------------------------------------
+  ;; "Einschub"
+  (setq search-string-regexp "Einschub[\\ ]*")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "("))
   ;;
   ;; Clean up
   ;;
