@@ -56,9 +56,8 @@
   (setq search-string-regexp "Einschub[\\ ]*")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "("))
-  ;;
+  ;; ---------------------------------------------------------
   ;; Clean up
-  ;;
   (setq lines-iterated 0)
   (save-excursion
     (setq previous-line "")
@@ -78,7 +77,7 @@
 	  (setq line (epic-insert-get-clean-location-style-line current-line))
 	  (unless (or (<= (point) 1)
 		      (is-heading-style previous-line))
-	    (setq line (concat "\n" line))))
+	    (epic-insert-edit-buffer-insert-newline)))
 	 ;; ------------------------------------------------
 	 ;; persona-style
 	 ((epic-insert-is-persona-style current-line)
@@ -105,6 +104,14 @@
       (setq lines-iterated (+ lines-iterated 1))
       (message (concat "Finished - lines-iterated: " (number-to-string lines-iterated)))))
   (switch-to-buffer edit-buffer-name))
+
+
+;;; ---------------------------------------------------------
+;;;
+(defun epic-insert-edit-buffer-insert-newline ()
+  "Inserts line into edit buffer."
+  (with-current-buffer (get-buffer-create edit-buffer-name)
+    (newline)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -237,6 +244,7 @@
 ;;
 ;;; ---------------------------------------------------------
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;; ---------------------------------------------------------
 ;;;
