@@ -118,9 +118,11 @@
   "Capitalize first word of a string."
   (setq temp-string (string-trim string))
   (setq start (string-match " " string))
-  (setq first-word (substring temp-string 0 start))
-  (setq first-word (capitalize first-word))
-  (setq temp-string (concat first-word (substring temp-string start)))
+  (if (eq start nil)
+      (setq temp-string (capitalize temp-string))
+    (setq first-word (substring temp-string 0 start))
+    (setq first-word (capitalize first-word))
+    (setq temp-string (concat first-word (substring temp-string start))))
   temp-string)
 
 ;;; ---------------------------------------------------------
@@ -200,6 +202,7 @@
   "Returns a cleaned insertion-style-line."  
   (setq line (string-single-spaces line))
   (setq line (string-trim line))
+  (setq line (string-capitalize-first-word line))
   (setq line (concat indentation line))
   (when (string-match "[a-zA-ZöäüÖÄÜ]\\'" line)
     (setq line (concat line ".")))
@@ -266,7 +269,8 @@
 ;;; ---------------------------------------------------------
 ;;;
 (ert-deftest test-string-capitalize-first-word ()    
-  "Tests string-capitalize-first-word function."  
+  "Tests string-capitalize-first-word function."
+  (should (string-equal (string-capitalize-first-word "dies") "Dies"))
   (should (string-equal (string-capitalize-first-word "dies ist ein Test.") "Dies ist ein Test."))
   (should (string-equal (string-capitalize-first-word "... dies ist ein Test.") "... dies ist ein Test.")))
 
@@ -339,8 +343,8 @@
 ;;;
 (ert-deftest epic-insert-test-get-clean-insertion-style-line ()
   "Test for clean insertion-style line."
-  (should (string-equal (epic-insert-get-clean-insertion-style-line "          (insertion     insertion.       insertion") (concat indentation "(insertion insertion. insertion.)")))
-  (should (string-equal (epic-insert-get-clean-insertion-style-line "(insertion     insertion.       insertion.") (concat indentation "(insertion insertion. insertion.)"))))
+  (should (string-equal (epic-insert-get-clean-insertion-style-line "          (insertion     insertion.       insertion") (concat indentation "(Insertion insertion. insertion.)")))
+  (should (string-equal (epic-insert-get-clean-insertion-style-line "(insertion     insertion.       insertion.") (concat indentation "(Insertion insertion. insertion.)"))))
 
 ;;; ---------------------------------------------------------
 ;;;

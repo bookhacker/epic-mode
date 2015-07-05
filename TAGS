@@ -181,26 +181,28 @@ epic-import.el,2824
 (defun prepare-document 415,16416
 (defun interpret-tag 431,16986
 
-epic-insert.el,883
+epic-insert.el,991
 (defconst edit-buffer-name 2,42
 (defun epic-insert-text-file 6,149
-(defun epic-insert-edit-buffer-insert 66,2561
-(defun epic-insert-is-persona-style 73,2797
-(defun epic-insert-is-insertion-style 79,2982
-(defun epic-insert-is-standard-style 87,3235
-(defun epic-insert-is-standard-continued-style 93,3438
-(defun epic-insert-get-clean-heading-style-line 99,3663
-(defun epic-insert-get-clean-location-style-line 108,3940
-(defun epic-insert-get-clean-persona-style-line 118,4279
-(defun epic-insert-get-clean-insertion-style-line 128,4617
-(defun epic-insert-get-clean-standard-style-line 141,5071
-(defun epic-insert-get-clean-standard-continued-style-line 178,6407
-(defun string-single-spaces 274,12015
-(defun string-trim-left 284,12298
-(defun string-trim-right 292,12516
-(defun string-trim 300,12729
-(defun search-in-buffer 309,12989
-(defun replace-in-buffer 317,13260
+(defun string-capitalize-first-word 117,5042
+(defun epic-insert-edit-buffer-insert-newline 128,5458
+(defun epic-insert-edit-buffer-insert 135,5685
+(defun epic-insert-is-persona-style 142,5921
+(defun epic-insert-is-insertion-style 150,6178
+(defun epic-insert-is-standard-style 158,6431
+(defun epic-insert-is-standard-continued-style 164,6634
+(defun epic-insert-get-clean-heading-style-line 170,6859
+(defun epic-insert-get-clean-location-style-line 179,7136
+(defun epic-insert-get-clean-persona-style-line 189,7475
+(defun epic-insert-get-clean-insertion-style-line 199,7813
+(defun epic-insert-get-clean-standard-style-line 213,8317
+(defun epic-insert-get-clean-standard-continued-style-line 250,9653
+(defun string-single-spaces 365,16045
+(defun string-trim-left 375,16328
+(defun string-trim-right 383,16546
+(defun string-trim 391,16759
+(defun search-in-buffer 400,17019
+(defun replace-in-buffer 408,17290
 
 epic-mobi.el,51
 (defconst kindlegen 1,0
