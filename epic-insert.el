@@ -13,9 +13,14 @@
   ;; Replace commands like enter, backspace etc.
   ;;
   ;;  replace "enter"
-  (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
+  ;;  (setq search-string-regexp "\\ enter[\\ -.?…]\\| enter$")
+  ;;(setq search-string-regexp "\\ enter[\\ -(]\\| enter$")
+  (setq search-string-regexp "\\ enter\\ \\| enter$")
   (while (search-in-buffer search-string-regexp)
     (replace-in-buffer search-string-regexp "\n "))
+  (setq search-string-regexp "\\ enter(")
+  (while (search-in-buffer search-string-regexp)
+    (replace-in-buffer search-string-regexp "\n("))
   ;; replace "Location"
   (setq search-string-regexp "Location\\ ")
   (while (search-in-buffer search-string-regexp)
