@@ -80,7 +80,9 @@
     (kill-buffer (current-buffer)))
   (setq org-buffer (find-file org-filename))
   (with-current-buffer (get-buffer-create org-buffer)
-    (org-odt-export-to-odt)
+    ;; Neu #bbrinkmann 05.10.2015
+    ;;(org-odt-export-to-odt)
+    (org-export-as-odt 3)
     (kill-buffer (current-buffer)))
   (uncompress-odt-file)
   (edit-meta-xml)
@@ -130,6 +132,10 @@
 ;;;
 (defun person-template-get-formatted-line (array)
   "Returns a formatted person-template line."
+  ;; #bbrinkmann 05.10.2015
+  ;; remove persona-style-prefix
+  ;;(length persona-style-prefix))
+  (setq array (substring array (length persona-style-prefix)))
   (setq new-string "")
   (setq last-char-was-uppercase nil)
   (setq second-last-char-was-uppercase nil)
@@ -393,3 +399,10 @@
   (with-current-buffer (get-buffer-create org-buffer-name)
     ;; (insert odt-paragraph-postfix)
     (newline)))
+
+
+
+;;; --------------------------------------------------------
+;;; <text:p text:style-name="w2e_Personen"></text:span> SKLEPIOS DER HEILER <text:span text:style-name="w2e_Kursiv">steht an seinen Ufern.</text:span></text:p>
+(ert-deftest test-person-template-get-formatted-line ()
+  (should (equal (person-template-get-formatted-line "*** ASKLEPIOS der Heiler.") "<text:p text:style-name=\"w2e_Personen\">ASKLEPIOS <text:span text:style-name=\"w2e_Kursiv\">der Heiler.</text:span></text:p>")))

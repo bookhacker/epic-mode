@@ -41,7 +41,9 @@
     (kill-buffer (current-buffer)))
   (setq org-buffer (find-file org-filename))
   (with-current-buffer (get-buffer-create org-buffer)
-    (org-odt-export-to-odt)
+    ;; #bbrinkmann 05.10.2015
+    ;;(org-odt-export-to-odt)
+    (org-export-as-odt 3)
     (kill-buffer (current-buffer)))
   (uncompress-odt-file)
   (edit-meta-xml)
