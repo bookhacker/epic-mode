@@ -132,10 +132,6 @@
 ;;;
 (defun person-template-get-formatted-line (array)
   "Returns a formatted person-template line."
-  ;; #bbrinkmann 05.10.2015
-  ;; remove persona-style-prefix
-  ;;(length persona-style-prefix))
-  (setq array (substring array (length persona-style-prefix)))
   (setq new-string "")
   (setq last-char-was-uppercase nil)
   (setq second-last-char-was-uppercase nil)
@@ -225,14 +221,23 @@
     (setq line (concat odt-insertion-paragraph-prefix (substring line 2) odt-paragraph-postfix "\n")))
    ;; heading template
    ((eq style heading-style)
+    ;; #bbrinkmann 05.10.2015
+    ;; remove heading-style-prefix
+    (setq line (substring line (length heading-style-prefix)))
     (setq line-formatted-temp (replace-regexp-in-string (regexp-quote " - ") "<text:line-break/>" line))
     (setq line (concat odt-heading-paragraph-prefix line-formatted-temp odt-heading-postfix "\n")))
    ;; location-template
    ((eq style location-style)
+    ;; #bbrinkmann 05.10.2015
+    ;; remove location-style-prefix
+    (setq line (substring line (length location-style-prefix)))
     (setq line (concat odt-location-paragraph-prefix line odt-paragraph-postfix "\n")))
    ;; persons-template
    ((or (eq style persons-style)
 	(eq style persons-standalone-style))
+    ;; #bbrinkmann 05.10.2015
+    ;; remove persona-style-prefix
+    (setq line (substring line (length persona-style-prefix)))
     (setq person-template-line (person-template-get-formatted-line line))
     (if (eq style persons-style)
 	(setq line (concat odt-person-paragraph-prefix person-template-line odt-paragraph-postfix))
@@ -378,8 +383,6 @@
     (setq current-line (get-current-line))
     (setq current-style (get-style current-line))
     (unless (eq current-style empty-line-style)
-
-
       (setq current-line (apply-italics current-line))
       (setq current-line (odt-apply-style current-style current-line last-style))
       (setq current-line (apply-footnotes current-line))
@@ -399,10 +402,3 @@
   (with-current-buffer (get-buffer-create org-buffer-name)
     ;; (insert odt-paragraph-postfix)
     (newline)))
-
-
-
-;;; --------------------------------------------------------
-;;; <text:p text:style-name="w2e_Personen"></text:span> SKLEPIOS DER HEILER <text:span text:style-name="w2e_Kursiv">steht an seinen Ufern.</text:span></text:p>
-(ert-deftest test-person-template-get-formatted-line ()
-  (should (equal (person-template-get-formatted-line "*** ASKLEPIOS der Heiler.") "<text:p text:style-name=\"w2e_Personen\">ASKLEPIOS <text:span text:style-name=\"w2e_Kursiv\">der Heiler.</text:span></text:p>")))

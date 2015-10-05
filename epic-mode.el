@@ -42,6 +42,8 @@
 (defconst werbung-file-name                        "werbung.html")
 (defvar   margin-left                              29)
 (defvar   margin-right                             29)
+(defconst heading-style-prefix                     "* ")
+(defconst location-style-prefix                    "** ")
 (defconst persona-style-prefix                     "*** ")
 
 ;;; ---------------------------------------------------------
