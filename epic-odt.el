@@ -364,8 +364,9 @@
   (insert-formatted-line line)
   (setq line (concat odt-subtitle-paragraph-prefix subtitle odt-paragraph-postfix "\n"))
   (insert-formatted-line line)
-  (setq line (concat odt-episoda-paragraph-prefix "Episoda " episoda-number ": " episoda-title odt-paragraph-postfix "\n"))
-  (insert-formatted-line line))
+  (unless (eq episoda-number "")
+    (setq line (concat odt-episoda-paragraph-prefix "Episoda " episoda-number ": " episoda-title odt-paragraph-postfix "\n"))
+    (insert-formatted-line line)))
 
 ;;; ---------------------------------------------------------
 ;;;
