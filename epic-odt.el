@@ -40,7 +40,7 @@
 #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \\n:nil ^:t arch:headline
 #+OPTIONS: title:nil author:nil c:nil creator:comment d:(not LOGBOOK) date:nil e:t
 #+OPTIONS: email:nil f:t inline:t num:t p:nil pri:nil stat:t tags:t
-#+OPTIONS: tasks:t tex:t timestamp:t toc:t todo:t |:t
+#+OPTIONS: tasks:t tex:t timestamp:nil toc:nil todo:t |:t
 #+CREATOR: 
 #+DESCRIPTION:
 #+EXCLUDE_TAGS: noexport
@@ -81,8 +81,10 @@
   (setq org-buffer (find-file org-filename))
   (with-current-buffer (get-buffer-create org-buffer)
     ;; Neu #bbrinkmann 05.10.2015
-    ;;(org-odt-export-to-odt)
-    (org-export-as-odt 3)
+    ;; original
+    (org-odt-export-to-odt)
+    ;; test
+    ;; (org-export-as-odt 0)
     (kill-buffer (current-buffer)))
   (uncompress-odt-file)
   (edit-meta-xml)
@@ -310,12 +312,45 @@
       (goto-char 0)
       (while (< (point) (point-max))
 	(setq current-personae-line (get-current-line))
-	(unless (eq (get-style current-personae-line) empty-line-style)
+	;; #bbrinkmann 05.10.2015
+	;;(unless (eq (get-style current-personae-line) empty-line-style)
+	(if (eq (get-style current-personae-line) heading-style)
+	    (progn
+	      ;; remove heading-style-prefix
+	      (setq current-personae-line (substring current-personae-line (length heading-style-prefix)))
+	      (setq formatted-line (concat odt-heading-paragraph-prefix current-personae-line odt-heading-postfix)))
+	  (if (eq (get-style current-personae-line) location-style)
+	      (progn
+		;; remove location-style-prefix
+		(setq current-personae-line (substring current-personae-line (length location-style-prefix)))
+		(setq formatted-line (concat odt-location-paragraph-prefix current-personae-line odt-paragraph-postfix)))
+	    (setq formatted-line (concat odt-standard-paragraph-prefix current-personae-line odt-paragraph-postfix))))
+	(with-current-buffer (get-buffer-create org-buffer-name)
+	  (insert formatted-line)(newline))
+	;;)
+	(forward-line))
+      (kill-buffer (current-buffer)))))
+
+;;; ---------------------------------------------------------
+;;;
+(defun odt-insert-personae_ORIGINAL ()
+  "Inserts content of personae file into html."
+  (when (file-exists-p personae-file-name)
+    (with-current-buffer (get-buffer-create odt-personae-buffer)
+      (find-file personae-file-name)
+      (goto-char 0)
+      (while (< (point) (point-max))
+	(setq current-personae-line (get-current-line))
+	;; #bbrinkmann 05.10.2015
+	;;(unless (eq (get-style current-personae-line) empty-line-style)
 	  (if (eq (get-style current-personae-line) heading-style)
+	      ;; remove heading-style-prefix
+	      (setq current-personae-line (substring current-personae-line heading-style-prefix))
 	      (setq formatted-line (concat odt-heading-paragraph-prefix current-personae-line odt-heading-postfix))
 	    (setq formatted-line (concat odt-standard-paragraph-prefix current-personae-line odt-paragraph-postfix)))
 	  (with-current-buffer (get-buffer-create org-buffer-name)
-	    (insert formatted-line)(newline)))
+	    (insert formatted-line)(newline))
+	  ;;)
 	(forward-line))
       (kill-buffer (current-buffer)))))
 
