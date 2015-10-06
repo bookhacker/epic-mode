@@ -100,7 +100,9 @@
       (find-file meta-xml-file)
       (setq string-to-replace "<dc:title></dc:title>")
       (setq replace-string (concat "<dc:title>" title " - " subtitle "</dc:title>\n"))
-      (setq replace-string (concat replace-string "<meta:user-defined meta:name=\"Untertitel\">Episoda " episoda-number ": " episoda-title "</meta:user-defined>"))
+      (if (eq episoda-number "")
+	  (setq replace-string (concat replace-string "<meta:user-defined meta:name=\"Untertitel\">" title " - " subtitle "</meta:user-defined>"))
+	(setq replace-string (concat replace-string "<meta:user-defined meta:name=\"Untertitel\">Episoda " episoda-number ": " episoda-title "</meta:user-defined>")))	
       ;; idiom for string replacement in current buffer;
       (let ((case-fold-search t)) ; or nil
 	(goto-char (point-min))
