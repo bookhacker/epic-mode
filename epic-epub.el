@@ -134,7 +134,10 @@
       (setq file-id (concat "htmlcontent" (number-to-string chapter-index)))
       (insert (concat "    <item href=\"" file-name "\" id=\"" file-id "\" media-type=\"application/xhtml+xml\" />\n"))
       (setq chapter-index (+ chapter-index 1)))
-    (insert "    <item href=\"content/footnotes.html\" id=\"footnotes.html\" media-type=\"application/xhtml+xml\" />\n")
+    ;; #bbrinkmann 07.10.2015: Only if footnotes file exists
+    (when (and (not (eq html-footnotes-file-path ""))
+	       (file-exists-p html-footnotes-file-path))
+      (insert "    <item href=\"content/footnotes.html\" id=\"footnotes.html\" media-type=\"application/xhtml+xml\" />\n"))
     (insert "    <item href=\"content/impressum.html\" id=\"impressum.html\" media-type=\"application/xhtml+xml\" />\n")
     (when (file-exists-p werbung-file-name)
       (insert "    <item href=\"content/werbung.html\" id=\"werbung.html\" media-type=\"application/xhtml+xml\" />\n"))
@@ -142,14 +145,19 @@
   </manifest>
   <spine toc=\"ncx\">\n")
     (insert (concat "    <itemref idref=\"title.html\"/>\n"))
-    (insert (concat "    <itemref idref=\"htmltoc\"/>\n"))
+    ;; #bbrinkmann 07.10.2015
+    ;; No toc.html
+    ;;(insert (concat "    <itemref idref=\"htmltoc\"/>\n"))
     (insert (concat "    <itemref idref=\"personae.html\"/>\n"))
     ;; insert spine entries
     (setq chapter-index 1)
     (while (<= chapter-index number-of-html-chapter-files)
       (insert (concat "    <itemref idref=\"htmlcontent" (number-to-string chapter-index) "\" />\n"))
       (setq chapter-index (+ chapter-index 1)))
-    (insert (concat "    <itemref idref=\"footnotes.html\"/>\n"))
+    ;; #bbrinkmann 07.10.2015: Only if footnotes file exists
+    (when (and (not (eq html-footnotes-file-path ""))
+	       (file-exists-p html-footnotes-file-path))
+      (insert (concat "    <itemref idref=\"footnotes.html\"/>\n")))
     (insert (concat "    <itemref idref=\"impressum.html\"/>\n"))
     (when (file-exists-p werbung-file-name)
       (insert (concat "    <itemref idref=\"werbung.html\"/>\n")))
@@ -158,7 +166,7 @@
     <!-- ToDo -->
     <reference href=\"content/personae.html\" type=\"text\" title=\"PERSONAE\" />
     <!-- For Kindle, the eBook opens to this HTML file when the user first opens the eBook -->
-    <reference href=\"content/toc.html\" title=\"Inhaltsverzeichnis\" type=\"toc\"/>
+    <!-- reference href=\"content/toc.html\" title=\"Inhaltsverzeichnis\" type=\"toc\"/ -->
   </guide>
 </package>")
     (setq content-opf-file-name (concat (file-name-as-directory epub-oebps-directory) "content.opf"))
