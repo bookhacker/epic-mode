@@ -466,10 +466,10 @@ title-combined)
     (unless (eq current-style empty-line-style)
       (when (eq current-style heading-style)
 	(setq next-line (get-next-line 1))
-	(setq heading-text current-line)
 	;; #bbrinkmann 07.10.2015
 	;; remove heading-style-prefix
-	(setq heading-text (substring heading-text (length heading-style-prefix)))
+	(setq current-line (substring current-line (length heading-style-prefix)))
+	(setq heading-text current-line)
 	(close-old-file)
 	(epub-insert-into-toc-ncx-first-level heading-text html-file-index)
 	(insert-into-toc-html-first-level)
@@ -490,12 +490,16 @@ title-combined)
       (when (eq current-style location-style)
 	;; #bbrinkmann 07.10.2015
       	;; (setq heading-text (get-location-first-part current-line))
-	(setq heading-text current-line)
 	;; #bbrinkmann 07.10.2015
 	;; remove location-style-prefix
-	(setq heading-text (substring heading-text (length location-style-prefix)))
+	(setq current-line (substring current-line (length location-style-prefix)))
+	(setq heading-text current-line)
 	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
       	(insert-into-toc-html-second-level))
+      ;; #bbrinkmann 07.10.2015: Remove persona-style-prefix persons-standalone-style
+      (when (or (eq current-style persons-style)
+		(eq current-style persons-standalone-style))
+	(setq current-line (substring current-line (length persona-style-prefix))))
       (setq current-line (html-apply-italics current-line))
       (setq current-line (html-apply-footnotes current-line))
       (setq current-line (html-apply-style current-style current-line last-style))
