@@ -327,7 +327,6 @@ title-combined)
 
 ;;; ---------------------------------------------------------
 ;;;
-;;(defun html-insert-personae ()
 (defun create-personae-page ()
   "Inserts content of personae file into html."
   (when (file-exists-p personae-file-name)
@@ -338,14 +337,18 @@ title-combined)
       (goto-char 0)
       (while (< (point) (point-max))
 	(setq current-personae-line (get-current-line))
-	(unless (eq (get-style current-personae-line) empty-line-style)
+;;	(unless (eq (get-style current-personae-line) empty-line-style)
+	(if (eq (get-style current-personae-line) empty-line-style)
+	    (with-current-buffer (get-buffer-create html-buffer-name)
+	      (insert html-line-break)(newline))
 	  (if (eq (get-style current-personae-line) heading-style)
 	      (progn
 		(setq heading-text current-personae-line)
 		(setq formatted-line (concat html-heading-paragraph-prefix current-personae-line html-heading-postfix)))
 	    (setq formatted-line (concat html-standard-paragraph-prefix current-personae-line html-paragraph-postfix)))
 	  (with-current-buffer (get-buffer-create html-buffer-name)
-	    (insert formatted-line)(newline)))
+	    (insert formatted-line)(newline))
+	  )
 	(forward-line))
       (with-current-buffer (get-buffer-create html-buffer-name)
 	(setq html-filename (concat (file-name-as-directory html-directory) "personae.html"))
