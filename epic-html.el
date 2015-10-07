@@ -31,6 +31,7 @@
 (defconst fnreturn-prefix                          "l" "Prefix for footnote return anchors.")
 (defvar   has-second-level                         nil "Defines if current first level heading has second-level.")
 (defvar   is-new-second-level                      nil "Defines, if we are already inside a second level.")
+(defvar   html-footnotes-file-path                 "")
 
 ;;; --------------------------------------------------------
 ;;;

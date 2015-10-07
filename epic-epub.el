@@ -211,13 +211,16 @@
     ;; close last open navPoint
     (insert "    </navPoint>\n")
     ;; Footnotes
-    (insert (concat "    <navPoint id=\"ncxcontent" (number-to-string navpoint-index) " \" playOrder=\"" (number-to-string navpoint-index) "\">
+    ;; #bbrinkmann 07.10.2015 footnotes only if footnote-file exists
+    (when (and (not (eq html-footnotes-file-path ""))
+	       (file-exists-p html-footnotes-file-path))
+      (insert (concat "    <navPoint id=\"ncxcontent" (number-to-string navpoint-index) " \" playOrder=\"" (number-to-string navpoint-index) "\">
       <navLabel>
         <text>Fußnoten</text>
       </navLabel>
       <content src=\"content/footnotes.html\" />
     </navPoint>\n"))
-    (setq navpoint-index (+ navpoint-index 1))
+      (setq navpoint-index (+ navpoint-index 1)))
     ;; Impressum
     (insert (concat "    <navPoint id=\"ncxcontent" (number-to-string navpoint-index) " \" playOrder=\"" (number-to-string navpoint-index) "\">
       <navLabel>
