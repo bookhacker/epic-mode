@@ -465,11 +465,10 @@ title-combined)
     (unless (eq current-style empty-line-style)
       (when (eq current-style heading-style)
 	(setq next-line (get-next-line 1))
-	(if (eq next-line "")
-	    (setq heading-text current-line)
- 	  ;; (setq next-line-partial (get-location-first-part next-line))
-	  ;;	  (setq heading-text (concat current-line ": " next-line-partial)))
-	  (setq heading-text current-line))
+	(setq heading-text current-line)
+	;; #bbrinkmann 07.10.2015
+	;; remove heading-style-prefix
+	(setq heading-text (substring heading-text (length heading-style-prefix)))
 	(close-old-file)
 	(epub-insert-into-toc-ncx-first-level heading-text html-file-index)
 	(insert-into-toc-html-first-level)
@@ -488,7 +487,12 @@ title-combined)
       ;; (when (and (not (eq last-style heading-style))
       ;; 		 (eq current-style location-style))
       (when (eq current-style location-style)
-      	(setq heading-text (get-location-first-part current-line))
+	;; #bbrinkmann 07.10.2015
+      	;; (setq heading-text (get-location-first-part current-line))
+	(setq heading-text current-line)
+	;; #bbrinkmann 07.10.2015
+	;; remove location-style-prefix
+	(setq heading-text (substring heading-text (length location-style-prefix)))
 	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
       	(insert-into-toc-html-second-level))
       (setq current-line (html-apply-italics current-line))
@@ -521,14 +525,27 @@ title-combined)
 	(setq next-line (get-next-line 1))
 	(if (eq next-line "")
 	    (setq heading-text current-line)
- 	  (setq next-line-partial (get-location-first-part next-line))
-	  (setq heading-text (concat current-line ": " next-line-partial)))
+ 	  ;; (setq next-line-partial (get-location-first-part next-line))
+	  ;;	  (setq heading-text (concat current-line ": " next-line-partial)))
+	  (setq heading-text current-line))
 	(close-old-file)
 	(epub-insert-into-toc-ncx-first-level heading-text html-file-index)
 	(insert-into-toc-html-first-level)
-	(create-new-file))
-      (when (and (not (eq last-style heading-style))
-		 (eq current-style location-style))
+	;;
+	;; neu
+	;;
+      	;; (setq heading-text (get-location-first-part next-line))
+	;; (epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
+      	;; (insert-into-toc-html-second-level)
+	;;
+	;; /neu
+	;;
+	(create-new-file)
+
+	)
+      ;; (when (and (not (eq last-style heading-style))
+      ;; 		 (eq current-style location-style))
+      (when (eq current-style location-style)
       	(setq heading-text (get-location-first-part current-line))
 	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
       	(insert-into-toc-html-second-level))
