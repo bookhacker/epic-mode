@@ -337,32 +337,24 @@ title-combined)
       (goto-char 0)
       (while (< (point) (point-max))
 	(setq current-personae-line (get-current-line))
-
-	;; ;; #bbrinkmann 07.10.2015: Remove prefixes
-	;; (setq current-personae-line-style (get-style current-personae-line))
-	;; (if (eq current-personae-line-style heading-style)
-	;;     (setq current-personae-line (substring current-personae-line (length heading-style-prefix)))
-	;;   (if (eq current-personae-line-style location-style)
-	;;       (setq current-personae-line (substring current-personae-line (length location-style-prefix)))
-	;;     (if (or (eq current-personae-line-style  	persons-style)
-	;; 	    (eq current-personae-line-style  	persons-standalone-style))
-	;; 	(setq current-personae-line (substring current-personae-line (length persona-style-prefix))))))
-
 	(if (eq (get-style current-personae-line) empty-line-style)
 	    (with-current-buffer (get-buffer-create html-buffer-name)
 	      (insert html-line-break)(newline))
 	  (if (eq (get-style current-personae-line) heading-style)
 	      (progn
 		(setq heading-text current-personae-line)
+		;; #bbrinkmann 07.10.2015: Remove heading-style-prefix
+		(setq current-personae-line (substring current-personae-line (length heading-style-prefix)))
 		(setq formatted-line (concat html-heading-paragraph-prefix current-personae-line html-heading-postfix)))
 	    (if (eq (get-style current-personae-line) location-style)
 		(progn
 		  (setq heading-text current-personae-line)
+		  ;; #bbrinkmann 07.10.2015: Remove location-style-prefix
+		  (setq current-personae-line (substring current-personae-line (length location-style-prefix)))
 		  (setq formatted-line (concat html-location-paragraph-prefix current-personae-line html-paragraph-postfix)))
 	      (setq formatted-line (concat html-standard-paragraph-prefix current-personae-line html-paragraph-postfix))))
 	  (with-current-buffer (get-buffer-create html-buffer-name)
-	    (insert formatted-line)(newline))
-	  )
+	    (insert formatted-line)(newline)))
 	(forward-line))
       (with-current-buffer (get-buffer-create html-buffer-name)
 	(setq html-filename (concat (file-name-as-directory html-directory) "personae.html"))
