@@ -32,12 +32,14 @@ p.w2e_Verlag {
 }
 
 p.w2e_Impressum {
+    text-align:center;
     text-indent:0em;
     margin:0em;
     margin-top:1em;
 }
 
 p.w2e_5f_Impressum_5f_FirstParagraph {
+    text-align:center;
     text-indent:0em;
     margin:0em;
 }
