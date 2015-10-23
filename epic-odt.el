@@ -438,5 +438,6 @@
   ;; (odt-insert-website)
   ;; (odt-insert-next-episoda)
   (with-current-buffer (get-buffer-create org-buffer-name)
-    ;; (insert odt-paragraph-postfix)
-    (newline)))
+    (unless (eq current-style insertion-style)
+	(insert odt-paragraph-postfix)
+      (newline))))
