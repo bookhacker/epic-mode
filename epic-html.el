@@ -130,6 +130,7 @@ title-combined)
     (setq line (concat html-italics-prefix (substring line 2) html-italics-postfix html-line-break)))
    ;; heading template
    ((eq style heading-style)
+    (setq line (html-insert-fnreturn line))
     (setq line (concat html-heading-paragraph-prefix line html-heading-postfix)))
    ;; location-template
    ((eq style location-style)
