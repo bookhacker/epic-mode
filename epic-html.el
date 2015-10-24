@@ -638,8 +638,9 @@ title-combined)
   "Writes toc.html."
   (with-current-buffer (get-buffer-create html-toc-buffer-name)
     ;; Footnotes
-    (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"footnotes.html\" style=\"text-decoration: none\">Fußnoten</a></p></li>"))
-    (insert html-toc-entry)(newline)
+    (when (file-exists-p html-footnotes-file-name)
+	(setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"footnotes.html\" style=\"text-decoration: none\">Fußnoten</a></p></li>"))
+	(insert html-toc-entry)(newline))
     ;; Impressum
     (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"impressum.html\" style=\"text-decoration: none\">Impressum</a></p></li>"))
     (insert html-toc-entry)(newline)
