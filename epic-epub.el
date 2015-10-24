@@ -122,9 +122,7 @@
   <manifest>
     <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />\n"))
     (insert "    <item href=\"content/title.html\" id=\"title.html\" media-type=\"application/xhtml+xml\" />\n")
-    ;; #bbrinkmann 07.10.2015
-    ;; No toc.html
-    ;; (insert "    <item href=\"content/toc.html\" id=\"htmltoc\" media-type=\"application/xhtml+xml\" />\n")
+    (insert "    <item href=\"content/toc.html\" id=\"htmltoc\" media-type=\"application/xhtml+xml\" />\n")
     (insert "    <item href=\"content/personae.html\" id=\"personae.html\" media-type=\"application/xhtml+xml\" />\n")
     ;; insert manifest entries
     (setq number-of-html-chapter-files (- html-file-index 1))

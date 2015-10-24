@@ -549,7 +549,14 @@ title-combined)
 	(setq current-line (substring current-line (length location-style-prefix)))
 	(setq heading-text current-line)
 	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
-      	(insert-into-toc-html-second-level))
+	;;
+	;; #bbrinkmann 24.10.2015: No second level in toc.html
+	;;
+      	;; (insert-into-toc-html-second-level)
+	;;
+	;;
+	;;
+	)
       ;; #bbrinkmann 07.10.2015: Remove persona-style-prefix persons-standalone-style
       (when (or (eq current-style persons-style)
 		(eq current-style persons-standalone-style))
@@ -607,7 +614,14 @@ title-combined)
       (when (eq current-style location-style)
       	(setq heading-text (get-location-first-part current-line))
 	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
-      	(insert-into-toc-html-second-level))
+	;;
+	;; #bbrinkmann 24.10.2015: No second level in toc-html
+	;;
+      	;;(insert-into-toc-html-second-level)
+	;;
+	;;
+	;;
+	)
       (setq current-line (html-apply-italics current-line))
       (setq current-line (html-apply-footnotes current-line))
       (setq current-line (html-apply-style current-style current-line last-style))
@@ -653,7 +667,13 @@ title-combined)
   (create-toc-html)
   (iterate-epos-buffer)
   (close-old-file)
-  (insert-into-toc-html)  
+  ;;
+  ;; #bbrinkmann 24.10.2015
+  ;;
+  ;;(insert-into-toc-html)  
+  ;;
+  ;;
+  ;;
   (write-footnotes-html)
   (create-legal-notice-page)
   (write-toc-html))
