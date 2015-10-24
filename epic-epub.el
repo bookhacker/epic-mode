@@ -122,7 +122,6 @@
   <manifest>
     <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\" />\n"))
     (insert "    <item href=\"content/title.html\" id=\"title.html\" media-type=\"application/xhtml+xml\" />\n")
-    (insert "    <item href=\"content/toc.html\" id=\"htmltoc\" media-type=\"application/xhtml+xml\" />\n")
     (insert "    <item href=\"content/personae.html\" id=\"personae.html\" media-type=\"application/xhtml+xml\" />\n")
     ;; insert manifest entries
     (setq number-of-html-chapter-files (- html-file-index 1))
@@ -136,6 +135,7 @@
     (when (and (not (eq html-footnotes-file-path ""))
 	       (file-exists-p html-footnotes-file-path))
       (insert "    <item href=\"content/footnotes.html\" id=\"footnotes.html\" media-type=\"application/xhtml+xml\" />\n"))
+    (insert "    <item href=\"content/toc.html\" id=\"htmltoc\" media-type=\"application/xhtml+xml\" />\n")
     (insert "    <item href=\"content/impressum.html\" id=\"impressum.html\" media-type=\"application/xhtml+xml\" />\n")
     (when (file-exists-p werbung-file-name)
       (insert "    <item href=\"content/werbung.html\" id=\"werbung.html\" media-type=\"application/xhtml+xml\" />\n"))
@@ -143,9 +143,6 @@
   </manifest>
   <spine toc=\"ncx\">\n")
     (insert (concat "    <itemref idref=\"title.html\"/>\n"))
-    ;; #bbrinkmann 07.10.2015
-    ;; No toc.html
-    ;;(insert (concat "    <itemref idref=\"htmltoc\"/>\n"))
     (insert (concat "    <itemref idref=\"personae.html\"/>\n"))
     ;; insert spine entries
     (setq chapter-index 1)
@@ -156,6 +153,7 @@
     (when (and (not (eq html-footnotes-file-path ""))
 	       (file-exists-p html-footnotes-file-path))
       (insert (concat "    <itemref idref=\"footnotes.html\"/>\n")))
+    (insert (concat "    <itemref idref=\"htmltoc\"/>\n"))
     (insert (concat "    <itemref idref=\"impressum.html\"/>\n"))
     (when (file-exists-p werbung-file-name)
       (insert (concat "    <itemref idref=\"werbung.html\"/>\n")))
@@ -227,6 +225,14 @@
       <content src=\"content/footnotes.html\" />
     </navPoint>\n"))
       (setq navpoint-index (+ navpoint-index 1)))
+    ;; toc.html
+    (insert (concat "    <navPoint id=\"ncxcontent" (number-to-string navpoint-index) " \" playOrder=\"" (number-to-string navpoint-index) "\">
+      <navLabel>
+        <text>Inhaltsverzeichnis</text>
+      </navLabel>
+      <content src=\"content/toc.html\" />
+    </navPoint>\n"))
+    (setq navpoint-index (+ navpoint-index 1))
     ;; Impressum
     (insert (concat "    <navPoint id=\"ncxcontent" (number-to-string navpoint-index) " \" playOrder=\"" (number-to-string navpoint-index) "\">
       <navLabel>
