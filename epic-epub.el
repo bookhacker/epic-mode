@@ -163,10 +163,9 @@
       (insert (concat "    <itemref idref=\"werbung.html\"/>\n")))
     (insert "  </spine>
   <guide>
-    <!-- ToDo -->
-    <reference href=\"content/personae.html\" type=\"text\" title=\"PERSONAE\" />
     <!-- For Kindle, the eBook opens to this HTML file when the user first opens the eBook -->
-    <!-- reference href=\"content/toc.html\" title=\"Inhaltsverzeichnis\" type=\"toc\"/ -->
+    <reference href=\"content/personae.html\" type=\"text\" title=\"PERSONAE\" />
+    <reference href=\"content/toc.html\" title=\"Inhaltsverzeichnis\" type=\"toc\"/>
   </guide>
 </package>")
     (setq content-opf-file-name (concat (file-name-as-directory epub-oebps-directory) "content.opf"))
