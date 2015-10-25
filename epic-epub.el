@@ -27,7 +27,8 @@
   "Creates an .epub from file."
   (interactive)
   (message "Creating .epub ...")
-  (defconst isbn isbn-epub)
+  (if (eq isbn nil)
+      (setq isbn isbn-epub))
   (setq is-first-call t)
   (epub-create-directories)
   (epub-create-toc-ncx)
@@ -38,6 +39,7 @@
   (when epub-delete-files-and-directories
     (epub-delete-files-and-directories))
   (epub-validate epub-file-name)
+  (setq isbn nil)
   (message ".epub created."))
 
 ;;; --------------------------------------------------------

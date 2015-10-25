@@ -45,6 +45,7 @@
 (defconst heading-style-prefix                     "* ")
 (defconst location-style-prefix                    "** ")
 (defconst persona-style-prefix                     "*** ")
+(defvar   isbn                                     nil)
 
 ;;; ---------------------------------------------------------
 ;;;
