@@ -27,6 +27,7 @@
   "Creates an .epub from file."
   (interactive)
   (message "Creating .epub ...")
+  (defconst isbn isbn-epub)
   (setq is-first-call t)
   (epub-create-directories)
   (epub-create-toc-ncx)
@@ -105,6 +106,7 @@
     <dc:title>" (get-title) "</dc:title>
     <dc:language>" opf-language "</dc:language>
     <dc:identifier id=\"" opf-book-id "\" opf:scheme=\"uuid\">urn:uuid:" guid "</dc:identifier>
+    <dc:identifier id=\"ISBN\">" isbn "</dc:identifier>
     <dc:creator opf:role=\"aut\">" author "</dc:creator>
     <dc:publisher>" publisher "</dc:publisher>
     <dc:date>" date "</dc:date>
