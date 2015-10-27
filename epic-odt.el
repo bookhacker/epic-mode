@@ -439,5 +439,5 @@
   ;; (odt-insert-next-episoda)
   (with-current-buffer (get-buffer-create org-buffer-name)
     (unless (eq current-style insertion-style)
-	(insert odt-paragraph-postfix)
-      (newline))))
+      (insert odt-paragraph-postfix))
+      (newline)))
