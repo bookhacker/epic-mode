@@ -1,3 +1,16 @@
+p.no-hang {
+/*    text-indent: 0em; */
+    margin: 0em 0em 0em 0em;
+
+   text-indent:-1em;
+    padding-left:1em;
+}
+
+p.hang {
+  text-indent: 0em;
+  margin: 0em 0em 0em 1em;
+}
+
 p.toctext {
 }
 

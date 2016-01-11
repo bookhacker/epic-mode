@@ -33,6 +33,8 @@
 (defvar   has-second-level                          nil "Defines if current first level heading has second-level.")
 (defvar   is-new-second-level                       nil "Defines, if we are already inside a second level.")
 (defvar   html-footnotes-file-path                  "")
+(defconst html-hang-indent-first-paragraph-prefix   "<p class=\"no-hang\">")
+(defconst html-hang-indent-paragraph-prefix         "<p class=\"hang\">")
 
 ;;; --------------------------------------------------------
 ;;;
@@ -97,38 +99,42 @@ title-combined)
 ;;;
 (defun html-apply-style (style line last-style)
   "Applies the selected template."
-  (with-current-buffer (get-buffer-create html-buffer-name)
-    (when (and (eq style standard-style)
-	       (or
-		(and (eq last-style standard-style)
-		     (not (string-prefix-p indentation line)))
-		(eq last-style standard-interrupted-style)
-		(eq last-style insertion-style)))
-      (delete-backward-char (+ (length html-line-break) 1))
-      (insert html-paragraph-postfix)(newline))
-    (when (and (or (eq style persons-style)
-		   (eq style persons-standalone-style)
-		   (eq style location-style))
-	       (or (eq last-style standard-style)
-		   (eq last-style standard-interrupted-style)
-		   (eq last-style insertion-style)))
-      (delete-backward-char (+ (length html-line-break) 1))
-      (insert html-paragraph-postfix)(newline)))
+  ;; (with-current-buffer (get-buffer-create html-buffer-name)
+  ;;   (when (and (eq style standard-style)
+  ;; 	       (or
+  ;; 		(and (eq last-style standard-style)
+  ;; 		     (not (string-prefix-p indentation line)))
+  ;; 		(eq last-style standard-interrupted-style)
+  ;; 		(eq last-style insertion-style)))
+  ;;     (delete-backward-char (+ (length html-line-break) 1))
+  ;;     (insert html-paragraph-postfix)(newline))
+  ;;   (when (and (or (eq style persons-style)
+  ;; 		   (eq style persons-standalone-style)
+  ;; 		   (eq style location-style))
+  ;; 	       (or (eq last-style standard-style)
+  ;; 		   (eq last-style standard-interrupted-style)
+  ;; 		   (eq last-style insertion-style)))
+  ;;     (delete-backward-char (+ (length html-line-break) 1))
+  ;;     (insert html-paragraph-postfix)(newline)))
   (cond
    ;; standard-template
    ((eq style standard-style)
     (if (string-prefix-p indentation line)
-	(setq line (concat (substring line 2) html-line-break))
+;;	(setq line (concat (substring line 2) html-line-break))
+	(setq line (concat html-hang-indent-paragraph-prefix (substring line 2) html-paragraph-postfix))
       ;; everything between ( and ) in italics.
       (setq line-to-insert (replace-regexp-in-string "(" (concat html-italics-prefix "(") line))
       (setq line-to-insert (replace-regexp-in-string ")" (concat")"  html-italics-postfix) line-to-insert))
-      (setq line (concat html-standard-paragraph-prefix line-to-insert html-line-break))))
+;;      (setq line (concat html-standard-paragraph-prefix line-to-insert html-line-break))))
+      (setq line (concat html-hang-indent-first-paragraph-prefix line-to-insert html-paragraph-postfix))))
    ;; standard-template-continued
    ((eq style standard-interrupted-style)
-      (setq line (concat (substring line 2) html-line-break)))
+;;      (setq line (concat (substring line 2) html-line-break)))
+      (setq line (concat html-hang-indent-paragraph-prefix (substring line 2) html-paragraph-postfix)))
    ;; insertion-template
    ((eq style insertion-style)
-    (setq line (concat html-italics-prefix (substring line 2) html-italics-postfix html-line-break)))
+;;    (setq line (concat html-italics-prefix (substring line 2) html-italics-postfix html-line-break)))
+    (setq line (concat html-hang-indent-paragraph-prefix html-italics-prefix (substring line 2) html-italics-postfix html-paragraph-postfix)))
    ;; heading template
    ((eq style heading-style)
     (setq line (html-insert-fnreturn line))
@@ -234,14 +240,14 @@ title-combined)
 (defun close-old-file ()
   "Closes the last .html-file."
   (unless (eq (get-buffer html-buffer-name) nil)
-    (with-current-buffer (get-buffer-create html-buffer-name)
-      ;; replace last \line with \par}
-      (when (or
-	     (eq last-style standard-style)
-	     (eq last-style standard-interrupted-style)
-	     (eq last-style insertion-style))
-	(delete-backward-char (+ (length html-line-break) 1))
-	(insert html-paragraph-postfix)(newline)))
+    ;; (with-current-buffer (get-buffer-create html-buffer-name)
+    ;;   ;; replace last \line with \par}
+    ;;   (when (or
+    ;; 	     (eq last-style standard-style)
+    ;; 	     (eq last-style standard-interrupted-style)
+    ;; 	     (eq last-style insertion-style))
+    ;; 	(delete-backward-char (+ (length html-line-break) 1))
+    ;; 	(insert html-paragraph-postfix)(newline)))
     (setq html-filename (concat (file-name-as-directory html-directory) (number-to-string html-file-index) ".html"))
     (with-current-buffer (get-buffer-create html-buffer-name)
       (create-html-footer)
@@ -520,44 +526,16 @@ title-combined)
     (unless (eq current-style empty-line-style)
       (when (eq current-style heading-style)
 	(setq next-line (get-next-line 1))
-	;; #bbrinkmann 07.10.2015
-	;; remove heading-style-prefix
 	(setq current-line (substring current-line (length heading-style-prefix)))
 	(setq heading-text current-line)
 	(close-old-file)
 	(epub-insert-into-toc-ncx-first-level heading-text html-file-index)
 	(insert-into-toc-html-first-level)
-	;;
-	;; neu
-	;;
-      	;; (setq heading-text (get-location-first-part next-line))
-	;; (epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
-      	;; (insert-into-toc-html-second-level)
-	;;
-	;; /neu
-	;;
-	(create-new-file)
-
-	)
-      ;; (when (and (not (eq last-style heading-style))
-      ;; 		 (eq current-style location-style))
+	(create-new-file))
       (when (eq current-style location-style)
-	;; #bbrinkmann 07.10.2015
-      	;; (setq heading-text (get-location-first-part current-line))
-	;; #bbrinkmann 07.10.2015
-	;; remove location-style-prefix
 	(setq current-line (substring current-line (length location-style-prefix)))
 	(setq heading-text current-line)
-	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
-	;;
-	;; #bbrinkmann 24.10.2015: No second level in toc.html
-	;;
-      	;; (insert-into-toc-html-second-level)
-	;;
-	;;
-	;;
-	)
-      ;; #bbrinkmann 07.10.2015: Remove persona-style-prefix persons-standalone-style
+	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated))
       (when (or (eq current-style persons-style)
 		(eq current-style persons-standalone-style))
 	(setq current-line (substring current-line (length persona-style-prefix))))
