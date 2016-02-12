@@ -38,6 +38,7 @@
 (defconst foreground-color                         "cyan")
 (defconst plot-buffer-name                         "plot-buffer")
 (defconst personae-file-name                       "personae")
+(defconst autor-file-name                          "autor")
 (defconst impressum-file-name                      "impressum")
 (defconst werbung-file-name                        "werbung.html")
 (defvar   margin-left                              29)

@@ -23,7 +23,8 @@
 (defconst odt-footnote-postfix                     "</text:p></text:note-body></text:note>")
 (defconst org-buffer-name                          "org-buffer")
 (defvar   org-file-name                            "")
-(defconst odt-personae-buffer                      "odt-personae-buffer") 
+(defconst odt-personae-buffer                      "odt-personae-buffer")
+(defconst odt-autor-buffer                         "odt-autor-buffer")
 (defconst meta-xml-buffer                          "meta-xml-buffer")
 (defconst odt-impressum-buffer                     "odt-impressum-buffer")
 
@@ -335,29 +336,6 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun odt-insert-personae_ORIGINAL ()
-  "Inserts content of personae file into html."
-  (when (file-exists-p personae-file-name)
-    (with-current-buffer (get-buffer-create odt-personae-buffer)
-      (find-file personae-file-name)
-      (goto-char 0)
-      (while (< (point) (point-max))
-	(setq current-personae-line (get-current-line))
-	;; #bbrinkmann 05.10.2015
-	;;(unless (eq (get-style current-personae-line) empty-line-style)
-	  (if (eq (get-style current-personae-line) heading-style)
-	      ;; remove heading-style-prefix
-	      (setq current-personae-line (substring current-personae-line heading-style-prefix))
-	      (setq formatted-line (concat odt-heading-paragraph-prefix current-personae-line odt-heading-postfix))
-	    (setq formatted-line (concat odt-standard-paragraph-prefix current-personae-line odt-paragraph-postfix)))
-	  (with-current-buffer (get-buffer-create org-buffer-name)
-	    (insert formatted-line)(newline))
-	  ;;)
-	(forward-line))
-      (kill-buffer (current-buffer)))))
-
-;;; ---------------------------------------------------------
-;;;
 (defun odt-insert-titel ()
   "Creates and inserts a title page."
   (setq line (concat odt-author-paragraph-prefix author odt-paragraph-postfix "\n"))
@@ -382,6 +360,26 @@
       (while (< (point) (point-max))
 	(setq current-impressum-line (get-current-line))
 	(setq formatted-line (concat current-impressum-line odt-line-break))
+	(insert-formatted-line formatted-line)
+	(forward-line))
+      ;; Letzen line-break entfernen
+      (with-current-buffer (get-buffer-create org-buffer-name)
+	(delete-backward-char (length odt-line-break)))
+      (insert-formatted-line (concat odt-paragraph-postfix "\n"))
+      (kill-buffer (current-buffer)))))
+
+;;; ---------------------------------------------------------
+;;;
+(defun odt-insert-autor ()
+  "Inserts content of autor file."
+  (when (file-exists-p autor-file-name)
+    (with-current-buffer (get-buffer-create odt-autor-buffer)
+      (find-file autor-file-name)
+      (goto-char 0)
+      (insert-formatted-line odt-legal-notice-paragraph-prefix)
+      (while (< (point) (point-max))
+	(setq current-autor-line (get-current-line))
+	(setq formatted-line (concat current-autor-line odt-line-break))
 	(insert-formatted-line formatted-line)
 	(forward-line))
       ;; Letzen line-break entfernen
@@ -440,4 +438,5 @@
   (with-current-buffer (get-buffer-create org-buffer-name)
     (unless (eq current-style insertion-style)
       (insert odt-paragraph-postfix))
-      (newline)))
+      (newline))
+  (odt-insert-autor))
