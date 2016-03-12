@@ -559,6 +559,9 @@ title-combined)
     (when (file-exists-p html-footnotes-file-name)
 	(setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"footnotes.html\" style=\"text-decoration: none\">Fußnoten</a></p></li>"))
 	(insert html-toc-entry)(newline))
+    ;; Autor
+    (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"autor.html\" style=\"text-decoration: none\">Über den Autor</a></p></li>"))
+    (insert html-toc-entry)(newline)
     ;; Impressum
     (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"impressum.html\" style=\"text-decoration: none\">Impressum</a></p></li>"))
     (insert html-toc-entry)(newline)
