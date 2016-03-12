@@ -35,6 +35,7 @@
 (defvar   html-footnotes-file-path                  "")
 (defconst html-hang-indent-first-paragraph-prefix   "<p class=\"no-hang\">")
 (defconst html-hang-indent-paragraph-prefix         "<p class=\"hang\">")
+(defconst autor-buffer                              "autor-buffer")
 
 ;;; --------------------------------------------------------
 ;;;
@@ -549,67 +550,6 @@ title-combined)
     (message (format "lines-iterated: %d" lines-iterated))
     (forward-line)))
 
-;;; ---------------------------------------------------------
-;;;
-(defun iterate-epos-buffer_ORIGINAL ()
-  "Iterates text buffer."
-  (setq lines-iterated 0)
-  (setq heading-text "")
-  (setq current-style nil)
-  (setq current-line nil)
-  (setq last-line nil)
-  (setq last-style nil)
-  (goto-char 1)
-  (while (< (point)(point-max))
-    (setq current-fnreturn-anchor (concat "<a id=\"" fnreturn-prefix (number-to-string lines-iterated) "\"></a>"))
-    (setq current-line (get-current-line))
-    (setq current-style (get-style current-line))
-    (unless (eq current-style empty-line-style)
-      (when (eq current-style heading-style)
-	(setq next-line (get-next-line 1))
-	(if (eq next-line "")
-	    (setq heading-text current-line)
- 	  ;; (setq next-line-partial (get-location-first-part next-line))
-	  ;;	  (setq heading-text (concat current-line ": " next-line-partial)))
-	  (setq heading-text current-line))
-	(close-old-file)
-	(epub-insert-into-toc-ncx-first-level heading-text html-file-index)
-	(insert-into-toc-html-first-level)
-	;;
-	;; neu
-	;;
-      	;; (setq heading-text (get-location-first-part next-line))
-	;; (epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
-      	;; (insert-into-toc-html-second-level)
-	;;
-	;; /neu
-	;;
-	(create-new-file)
-
-	)
-      ;; (when (and (not (eq last-style heading-style))
-      ;; 		 (eq current-style location-style))
-      (when (eq current-style location-style)
-      	(setq heading-text (get-location-first-part current-line))
-	(epub-insert-into-toc-ncx-second-level heading-text html-file-index lines-iterated)
-	;;
-	;; #bbrinkmann 24.10.2015: No second level in toc-html
-	;;
-      	;;(insert-into-toc-html-second-level)
-	;;
-	;;
-	;;
-	)
-      (setq current-line (html-apply-italics current-line))
-      (setq current-line (html-apply-footnotes current-line))
-      (setq current-line (html-apply-style current-style current-line last-style))
-      (html-insert-line current-line)
-      (setq last-style current-style)
-      (setq last-line current-line))
-    (setq lines-iterated (+ lines-iterated 1))
-    (message (format "lines-iterated: %d" lines-iterated))
-    (forward-line)))
-
 ;;; --------------------------------------------------------
 ;;;
 (defun write-toc-html ()
@@ -653,9 +593,50 @@ title-combined)
   ;;
   ;;
   ;;
+  (create-autor-page)
   (write-footnotes-html)
   (create-legal-notice-page)
   (write-toc-html))
+
+;;; --------------------------------------------------------
+;;;
+(defun create-autor-page ()
+  "Creates an autor page."
+  (setq is-first-line t)
+  (setq is-first-paragraph t)
+  (when (file-exists-p autor-file-name)
+    (with-current-buffer (get-buffer-create html-buffer-name)
+      (create-html-header))
+    (with-current-buffer (get-buffer-create autor-buffer)      
+      (find-file autor-file-name)
+      (goto-char 0)
+      (while (< (point) (point-max))
+	(setq formatted-line "")
+	(setq current-autor-line (get-current-line))
+	(if (eq (get-style current-autor-line) empty-line-style)
+	    (progn
+	      (with-current-buffer (get-buffer-create html-buffer-name)
+		(delete-backward-char (+ (length html-line-break) 1)))
+	      (setq formatted-line html-paragraph-postfix)
+	      (setq is-first-line t))
+	  (when is-first-line
+	    (if is-first-paragraph
+		(progn
+		  (setq formatted-line (concat html-legal-notice-first-paragraph-prefix))
+		  (setq is-first-paragraph nil))
+	      (setq formatted-line (concat html-legal-notice-paragraph-prefix)))
+	      (setq is-first-line nil))
+	  (setq formatted-line (concat formatted-line current-autor-line html-line-break)))
+	(html-insert-line formatted-line)
+	(forward-line))
+      (with-current-buffer (get-buffer-create html-buffer-name)
+	(delete-backward-char (+ (length html-line-break) 1))
+	(html-insert-line html-paragraph-postfix))
+      (kill-buffer (current-buffer)))
+    (with-current-buffer (get-buffer-create html-buffer-name)
+      (create-html-footer)
+      (setq html-filename (concat (file-name-as-directory html-directory) "autor.html"))
+      (write-file html-filename nil))))
 
 ;;; --------------------------------------------------------
 ;;;
