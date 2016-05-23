@@ -1,6 +1,8 @@
-(defconst odt-template-file-name                   "epos_CreateSpace - 5.06 x 7.81.ott")
+;; (defconst odt-template-file-name                   "epos_CreateSpace - 5.06 x 7.81.ott")
+(defconst odt-template-file-name                   "epos_BOD - 135 x 215.ott")
 (defconst odt-author-paragraph-prefix              "<text:p text:style-name=\"w2e_Autor\">")
 (defconst odt-title-paragraph-prefix               "<text:p text:style-name=\"w2e_Titel\">")
+(defconst odt-schmutztitel-paragraph-prefix        "<text:p text:style-name=\"w2e_Schmutztitel\">")
 (defconst odt-subtitle-paragraph-prefix            "<text:p text:style-name=\"w2e_Untertitel\">")
 (defconst odt-episoda-paragraph-prefix             "<text:p text:style-name=\"w2e_Episoda\">")
 (defconst odt-publisher-paragraph-prefix           "<text:p text:style-name=\"w2e_Verlag\">")
@@ -336,6 +338,29 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun odt-insert-schmutztitel ()
+  "Creates and inserts a Schmutztitel page."
+  (setq line (concat odt-schmutztitel-paragraph-prefix "SCHMUTZTITEL" odt-paragraph-postfix "\n"))
+  (insert-formatted-line line)
+  ;; (setq line (concat odt-title-paragraph-prefix title odt-paragraph-postfix "\n"))
+  ;; (insert-formatted-line line)
+  ;; (setq line (concat odt-subtitle-paragraph-prefix subtitle odt-paragraph-postfix "\n"))
+  ;; (insert-formatted-line line)
+  ;; (unless (eq episoda-number "")
+  ;;   (setq line (concat odt-episoda-paragraph-prefix "Episoda " episoda-number ": " episoda-title odt-paragraph-postfix "\n"))
+  ;;   (insert-formatted-line line)))
+  )
+
+
+;;; ---------------------------------------------------------
+;;;
+(defun odt-insert-schmutztitel-rueckseite ()
+  "Inserts an empty Schmutztitel Rückseite page."
+  (setq line (concat odt-empty-page-paragraph-prefix "" odt-paragraph-postfix))
+  (insert-formatted-line (concat line "\n")))
+
+;;; ---------------------------------------------------------
+;;;
 (defun odt-insert-titel ()
   "Creates and inserts a title page."
   (setq line (concat odt-author-paragraph-prefix author odt-paragraph-postfix "\n"))
@@ -392,7 +417,7 @@
 ;;;
 (defun odt-insert-empty-page ()
   "Inserts an empty page."
-  (setq line (concat odt-empty-page-paragraph-prefix "" odt-paragraph-postfix))
+  (setq line (concat odt-empty-page-paragraph-prefix "TEST" odt-paragraph-postfix))
   (insert-formatted-line (concat line "\n")))
 
 ;;; ---------------------------------------------------------
@@ -408,6 +433,8 @@
   ;;
   ;;
   ;; Titel
+  (odt-insert-schmutztitel)
+  (odt-insert-schmutztitel-rueckseite)
   (odt-insert-titel)
   (odt-insert-impressum)
   (odt-insert-personae)
