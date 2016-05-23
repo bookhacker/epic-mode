@@ -341,7 +341,7 @@
 ;;;
 (defun odt-insert-schmutztitel ()
   "Creates and inserts a Schmutztitel page."
-  (setq line (concat odt-schmutztitel-paragraph-prefix (upcase author) odt-line-break (upcase title) " - " subtitle))
+  (setq line (concat odt-schmutztitel-paragraph-prefix (upcase author) odt-line-break title " - " subtitle))
   (if (eq episoda-number "")
       (setq line (concat line odt-paragraph-postfix "\n"))
     (setq line (concat line odt-line-break "Episoda " episoda-number ": " episoda-title odt-paragraph-postfix "\n")))
@@ -351,10 +351,10 @@
 ;;;
 (defun odt-insert-schmutztitel-ORIGINAL ()
   "Creates and inserts a Schmutztitel page."
-  (setq line (concat odt-schmutztitel-paragraph-prefix (upcase author) odt-line-break (upcase title) " - "))
+  (setq line (concat odt-schmutztitel-paragraph-prefix (upcase author) odt-line-break (upcase title) " - " subtitle))
   (if (eq episoda-number "")
-      (setq line (concat line subtitle odt-paragraph-postfix "\n"))
-    (setq line (concat line "Episoda " episoda-number ": " episoda-title odt-paragraph-postfix "\n")))
+      (setq line (concat line odt-paragraph-postfix "\n"))
+    (setq line (concat line odt-line-break "Episoda " episoda-number ": " episoda-title odt-paragraph-postfix "\n")))
   (insert-formatted-line line))
 
 ;;; ---------------------------------------------------------
