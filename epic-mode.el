@@ -40,6 +40,7 @@
 (defconst personae-file-name                       "personae")
 (defconst autor-file-name                          "autor")
 (defconst impressum-file-name                      "impressum")
+(defconst impressum-file-name-bod                  "impressum_bod")
 (defconst werbung-file-name                        "werbung.html")
 (defvar   margin-left                              29)
 (defvar   margin-right                             29)

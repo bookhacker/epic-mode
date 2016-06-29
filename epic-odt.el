@@ -400,6 +400,26 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun odt-insert-impressum-bod ()
+  "Inserts content of impressum file."
+  (when (file-exists-p impressum-file-name-bod)
+    (with-current-buffer (get-buffer-create odt-impressum-buffer)
+      (find-file impressum-file-name-bod)
+      (goto-char 0)
+      (insert-formatted-line odt-legal-notice-paragraph-prefix)
+      (while (< (point) (point-max))
+	(setq current-impressum-line (get-current-line))
+	(setq formatted-line (concat current-impressum-line odt-line-break))
+	(insert-formatted-line formatted-line)
+	(forward-line))
+      ;; Letzen line-break entfernen
+      (with-current-buffer (get-buffer-create org-buffer-name)
+	(delete-backward-char (length odt-line-break)))
+      (insert-formatted-line (concat odt-paragraph-postfix "\n"))
+      (kill-buffer (current-buffer)))))
+
+;;; ---------------------------------------------------------
+;;;
 (defun odt-insert-autor ()
   "Inserts content of autor file."
   (when (file-exists-p autor-file-name)
@@ -441,7 +461,7 @@
   (odt-insert-schmutztitel)
   (odt-insert-schmutztitel-rueckseite)
   (odt-insert-titel)
-  (odt-insert-impressum)
+  (odt-insert-impressum-bod)
   (odt-insert-personae)
   ;;(odt-insert-empty-page)
   ;;
