@@ -298,7 +298,7 @@
        (eq (is-uppercase-letter last-char)      t)
        (eq (is-uppercase-letter previous-input) t))
       (progn
-	(end-of-line)
+;;	(end-of-line)
 	(setq previous-input 0)
 	(setq current-output-function   'person-person-output-function)
 	(setq current-on-enter-function 'person-person-on-enter-function))
@@ -316,7 +316,7 @@
        (eq (is-uppercase-letter last-char)      t)
        (eq (is-uppercase-letter previous-input) t))
       (progn
-	(end-of-line)
+;;	(end-of-line)
 	(setq previous-input 0)
 	(setq current-output-function   'person-standalone-person-output-function)
 	(setq current-on-enter-function 'person-person-standalone-on-enter-function))
