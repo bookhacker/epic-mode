@@ -10,6 +10,7 @@
 (defconst odt-legal-notice-paragraph-prefix         "<text:p text:style-name=\"w2e_Impressum\">")
 (defconst odt-heading-paragraph-prefix              "<text:h text:style-name=\"Heading_20_2\" text:outline-level=\"2\">")
 (defconst odt-standard-paragraph-prefix             "<text:p text:style-name=\"w2e_Standard\">")
+(defconst odt-normal-paragraph-prefix               "<text:p text:style-name=\"w2e_Normal\">")
 (defconst odt-standard-paragraph-continued-prefix   "<text:p text:style-name=\"w2e_Standard_Unterbrochen\">")
 (defconst odt-insertion-paragraph-prefix            "<text:p text:style-name=\"w2e_Einschub\">")
 (defconst odt-location-paragraph-prefix             "<text:p text:style-name=\"w2e_Schauplatz\">")
@@ -479,7 +480,7 @@
 		;; remove location-style-prefix
 		(setq current-whathappenedsofar-line (substring current-whathappenedsofar-line (length location-style-prefix)))
 		(setq formatted-line (concat odt-location-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix)))
-	    (setq formatted-line (concat odt-standard-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix))))
+	    (setq formatted-line (concat odt-normal-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix))))
 	(with-current-buffer (get-buffer-create org-buffer-name)
 	  (insert formatted-line)(newline))
 	(forward-line))
