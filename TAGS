@@ -40,7 +40,7 @@ epic-general-functions.el,91
 (defun is-lowercase-letter 9,227
 (defun is-uppercase-letter 28,624
 
-epic-html.el,2810
+epic-html.el,2854
 (defconst html-author-paragraph-prefix 1,0
 (defconst html-title-paragraph-prefix 2,79
 (defconst html-subtitle-paragraph-prefix 3,158
@@ -71,43 +71,44 @@ epic-html.el,2810
 (defvar   html-file-index 28,2256
 (defvar   last-style 29,2311
 (defconst personae-buffer 30,2368
-(defconst impressum-buffer 31,2439
-(defconst fnreturn-prefix 32,2511
-(defvar   has-second-level 33,2606
-(defvar   is-new-second-level 34,2722
-(defvar   html-footnotes-file-path 35,2831
-(defconst html-hang-indent-first-paragraph-prefix 36,2887
-(defconst html-hang-indent-paragraph-prefix 37,2964
-(defconst autor-buffer 38,3038
-(defun get-title 42,3172
-(defun create-html-header 54,3625
-(defun create-html-footer 71,4159
-(defun html-apply-italics 78,4310
-(defun html-apply-style 101,5114
-(defun html-insert-line 160,8178
-(defun html-person-template-get-formatted-line 167,8412
-(defun create-toc-html 221,10694
-(defun create-new-file 233,11177
-(defun close-old-file 241,11465
-(defun insert-into-toc-html 261,12357
-(defun insert-into-toc-html-first-level 271,12851
-(defun insert-into-toc-html-second-level 285,13516
-(defun html-apply-footnotes 301,14502
-(defun create-personae-page 339,16431
-(defun create-personae-page_ORIGINAL 382,18574
-(defun create-legal-notice-page 419,20476
-(defun create-cover-page 459,22160
-(defun create-werbung-page 466,22437
-(defun html-insert-fnreturn 473,22722
-(defun get-location-first-part 491,23368
-(defun html-remove-indentation 506,23927
-(defun iterate-epos-buffer 514,24168
-(defun write-toc-html 555,25940
-(defun write-footnotes-html 576,26974
-(defun iterate-html-buffer 587,27491
-(defun create-autor-page 606,27872
-(defun create-title-page 646,29514
-(defun create-html 667,30611
+(defconst whathappenedsofar-buffer 31,2439
+(defconst impressum-buffer 32,2519
+(defconst fnreturn-prefix 33,2591
+(defvar   has-second-level 34,2686
+(defvar   is-new-second-level 35,2802
+(defvar   html-footnotes-file-path 36,2911
+(defconst html-hang-indent-first-paragraph-prefix 37,2967
+(defconst html-hang-indent-paragraph-prefix 38,3044
+(defconst autor-buffer 39,3118
+(defun get-title 43,3252
+(defun create-html-header 55,3705
+(defun create-html-footer 72,4239
+(defun html-apply-italics 79,4390
+(defun html-apply-style 102,5194
+(defun html-insert-line 161,8258
+(defun html-person-template-get-formatted-line 168,8492
+(defun create-toc-html 222,10774
+(defun create-new-file 234,11257
+(defun close-old-file 242,11545
+(defun insert-into-toc-html 262,12437
+(defun insert-into-toc-html-first-level 272,12931
+(defun insert-into-toc-html-second-level 286,13596
+(defun html-apply-footnotes 302,14582
+(defun create-personae-page 340,16511
+(defun create-whathappenedsofar-page 381,18543
+(defun create-legal-notice-page 422,20706
+(defun create-cover-page 462,22390
+(defun create-werbung-page 469,22667
+(defun html-insert-fnreturn 476,22952
+(defun get-location-first-part 494,23598
+(defun html-remove-indentation 509,24157
+(defun iterate-epos-buffer 517,24398
+(defun write-toc-html 558,26170
+(defun write-footnotes-html 579,27204
+(defun iterate-html-buffer 590,27721
+(defun create-autor-page 609,28102
+(defun create-title-page 649,29744
+(defun create-html 670,30841
 
 epic-import.el,2824
 (defconst heading-marker 1,0
@@ -339,7 +340,7 @@ epic-mode.el,5015
 (defun load-book-information 1087,39741
 (define-minor-mode epic-mode1095,40049
 
-epic-odt.el,2480
+epic-odt.el,2429
 (defconst odt-template-file-name 2,92
 (defconst odt-author-paragraph-prefix 3,172
 (defconst odt-title-paragraph-prefix 4,266
@@ -394,10 +395,9 @@ epic-odt.el,2480
 (defun odt-insert-impressum 386,17909
 (defun odt-insert-impressum-bod 406,18747
 (defun odt-insert-autor 426,19597
-(defun odt-insert-whathappenedsofar_OLD 446,20407
-(defun  odt-insert-whathappenedsofar 466,21293
-(defun odt-insert-empty-page 497,22957
-(defun iterate-odt-buffer 504,23213
+(defun  odt-insert-whathappenedsofar 446,20407
+(defun odt-insert-empty-page 478,22130
+(defun iterate-odt-buffer 485,22386
 
 epic-pdf.el,24
 (defun pdf-create 3,65

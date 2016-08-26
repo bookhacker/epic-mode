@@ -8,6 +8,8 @@
 (defconst html-heading-paragraph-prefix             "<h2 class=\"centered\">")
 (defconst html-standard-paragraph-prefix            "<p class=\"w2e_Standard\">")
 (defconst html-standard-paragraph-margin-top-prefix "<p class=\"w2e_Standard_margin_top\">")
+(defconst html-normal-paragraph-prefix              "<p class=\"w2e_Normal\">")
+(defconst html-normal-paragraph-margin-top-prefix   "<p class=\"w2e_Normal_margin_top\">")
 (defconst html-standard-paragraph-continued-prefix  "<p class=\"w2e_Standard_Unterbrochen\">")
 (defconst html-insertion-paragraph-prefix           "<p class=\"w2e_Einschub\">")
 (defconst html-location-paragraph-prefix            "<p class=\"w2e_Schauplatz\">")
@@ -28,6 +30,7 @@
 (defvar   html-file-index                           1)
 (defvar   last-style                                nil)
 (defconst personae-buffer                           "personae-buffer")
+(defconst whathappenedsofar-buffer                  "whathappenedsofar-buffer")
 (defconst impressum-buffer                          "impressum-buffer")
 (defconst fnreturn-prefix                           "l" "Prefix for footnote return anchors.")
 (defvar   has-second-level                          nil "Defines if current first level heading has second-level.")
@@ -226,6 +229,9 @@ title-combined)
     (insert html-toc-heading)(newline)
     ;; PERSONAE
     (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"personae.html\" style=\"text-decoration: none\">PERSONAE</a></p></li>"))
+    ;; WHATHAPPENEDSOFAR
+    (when (file-exists-p whathappenedsofar-file-name)
+      (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"whathappenedsofar.html\" style=\"text-decoration: none\">WAS BISHER GESCHAH</a></p></li>")))
     (insert html-toc-entry)(newline)))
 
 ;;; ---------------------------------------------------------
@@ -349,18 +355,16 @@ title-combined)
 	(setq current-personae-line (get-current-line))
 	(if (eq (get-style current-personae-line) empty-line-style)
 	    (setq is-first-line t)
-	;;     (with-current-buffer (get-buffer-create html-buffer-name)
-	;;       (insert html-line-break)(newline))
 	  (if (eq (get-style current-personae-line) heading-style)
 	      (progn
 		(setq heading-text current-personae-line)
-		;; #bbrinkmann 07.10.2015: Remove heading-style-prefix
+		;; Remove heading-style-prefix
 		(setq current-personae-line (substring current-personae-line (length heading-style-prefix)))
 		(setq formatted-line (concat html-heading-paragraph-prefix current-personae-line html-heading-postfix)))
 	    (if (eq (get-style current-personae-line) location-style)
 		(progn
 		  (setq heading-text current-personae-line)
-		  ;; #bbrinkmann 07.10.2015: Remove location-style-prefix
+		  ;; Remove location-style-prefix
 		  (setq current-personae-line (substring current-personae-line (length location-style-prefix)))
 		  (setq formatted-line (concat html-location-paragraph-prefix current-personae-line html-paragraph-postfix)))
 	      (if is-first-line
@@ -379,37 +383,41 @@ title-combined)
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun create-personae-page_ORIGINAL ()
-  "Inserts content of personae file into html."
-  (when (file-exists-p personae-file-name)
+(defun create-whathappenedsofar-page ()
+  "Inserts content of whathappenedsofar file into html."
+  (setq is-first-line nil)
+  (when (file-exists-p whathappenedsofar-file-name)
     (with-current-buffer (get-buffer-create html-buffer-name)
       (create-html-header))
-    (with-current-buffer (get-buffer-create personae-buffer)
-      (find-file personae-file-name)
+    (with-current-buffer (get-buffer-create whathappenedsofar-buffer)
+      (find-file whathappenedsofar-file-name)
       (goto-char 0)
       (while (< (point) (point-max))
-	(setq current-personae-line (get-current-line))
-	(if (eq (get-style current-personae-line) empty-line-style)
-	    (with-current-buffer (get-buffer-create html-buffer-name)
-	      (insert html-line-break)(newline))
-	  (if (eq (get-style current-personae-line) heading-style)
+	(setq current-whathappenedsofar-line (get-current-line))
+	(if (eq (get-style current-whathappenedsofar-line) empty-line-style)
+	    (setq is-first-line t)
+	  (if (eq (get-style current-whathappenedsofar-line) heading-style)
 	      (progn
-		(setq heading-text current-personae-line)
-		;; #bbrinkmann 07.10.2015: Remove heading-style-prefix
-		(setq current-personae-line (substring current-personae-line (length heading-style-prefix)))
-		(setq formatted-line (concat html-heading-paragraph-prefix current-personae-line html-heading-postfix)))
-	    (if (eq (get-style current-personae-line) location-style)
+		(setq heading-text current-whathappenedsofar-line)
+		;; Remove heading-style-prefix
+		(setq current-whathappenedsofar-line (substring current-whathappenedsofar-line (length heading-style-prefix)))
+		(setq formatted-line (concat html-heading-paragraph-prefix current-whathappenedsofar-line html-heading-postfix)))
+	    (if (eq (get-style current-whathappenedsofar-line) location-style)
 		(progn
-		  (setq heading-text current-personae-line)
-		  ;; #bbrinkmann 07.10.2015: Remove location-style-prefix
-		  (setq current-personae-line (substring current-personae-line (length location-style-prefix)))
-		  (setq formatted-line (concat html-location-paragraph-prefix current-personae-line html-paragraph-postfix)))
-	      (setq formatted-line (concat html-standard-paragraph-prefix current-personae-line html-paragraph-postfix))))
+		  (setq heading-text current-whathappenedsofar-line)
+		  ;; Remove location-style-prefix
+		  (setq current-whathappenedsofar-line (substring current-whathappenedsofar-line (length location-style-prefix)))
+		  (setq formatted-line (concat html-location-paragraph-prefix current-whathappenedsofar-line html-paragraph-postfix)))
+	      (if is-first-line
+		  (progn
+		    (setq is-first-line nil)
+		    (setq formatted-line (concat html-normal-paragraph-margin-top-prefix current-whathappenedsofar-line html-paragraph-postfix)))
+		(setq formatted-line (concat html-normal-paragraph-prefix current-whathappenedsofar-line html-paragraph-postfix)))))
 	  (with-current-buffer (get-buffer-create html-buffer-name)
 	    (insert formatted-line)(newline)))
 	(forward-line))
       (with-current-buffer (get-buffer-create html-buffer-name)
-	(setq html-filename (concat (file-name-as-directory html-directory) "personae.html"))
+	(setq html-filename (concat (file-name-as-directory html-directory) "whathappenedsofar.html"))
 	(create-html-footer)
 	(write-file html-filename nil))
       (kill-buffer (current-buffer)))))
@@ -674,4 +682,5 @@ title-combined)
     (make-directory html-directory))
   (create-title-page)
   (create-personae-page)
+  (create-whathappenedsofar-page)
   (iterate-html-buffer))

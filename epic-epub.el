@@ -128,6 +128,8 @@
     (insert "    <item href=\"content/title.html\" id=\"title.html\" media-type=\"application/xhtml+xml\" />\n")
     (insert "    <item href=\"content/toc.html\" id=\"htmltoc\" media-type=\"application/xhtml+xml\" />\n")
     (insert "    <item href=\"content/personae.html\" id=\"personae.html\" media-type=\"application/xhtml+xml\" />\n")
+    (when (file-exists-p whathappenedsofar-file-name)
+      (insert "    <item href=\"content/whathappenedsofar.html\" id=\"whathappenedsofar.html\" media-type=\"application/xhtml+xml\" />\n"))
     ;; insert manifest entries
     (setq number-of-html-chapter-files (- html-file-index 1))
     (setq chapter-index 1)
@@ -136,7 +138,7 @@
       (setq file-id (concat "htmlcontent" (number-to-string chapter-index)))
       (insert (concat "    <item href=\"" file-name "\" id=\"" file-id "\" media-type=\"application/xhtml+xml\" />\n"))
       (setq chapter-index (+ chapter-index 1)))
-    ;; #bbrinkmann 07.10.2015: Only if footnotes file exists
+    ;; Only if footnotes file exists
     (when (and (not (eq html-footnotes-file-path ""))
 	       (file-exists-p html-footnotes-file-path))
       (insert "    <item href=\"content/footnotes.html\" id=\"footnotes.html\" media-type=\"application/xhtml+xml\" />\n"))
@@ -150,12 +152,14 @@
     (insert (concat "    <itemref idref=\"title.html\"/>\n"))
     (insert (concat "    <itemref idref=\"htmltoc\"/>\n"))
     (insert (concat "    <itemref idref=\"personae.html\"/>\n"))
+    (when (file-exists-p whathappenedsofar-file-name)
+      (insert (concat "    <itemref idref=\"whathappenedsofar.html\"/>\n")))
     ;; insert spine entries
     (setq chapter-index 1)
     (while (<= chapter-index number-of-html-chapter-files)
       (insert (concat "    <itemref idref=\"htmlcontent" (number-to-string chapter-index) "\" />\n"))
       (setq chapter-index (+ chapter-index 1)))
-    ;; #bbrinkmann 07.10.2015: Only if footnotes file exists
+    ;; Only if footnotes file exists
     (when (and (not (eq html-footnotes-file-path ""))
 	       (file-exists-p html-footnotes-file-path))
       (insert (concat "    <itemref idref=\"footnotes.html\"/>\n")))
@@ -218,7 +222,15 @@
       </navLabel>
       <content src=\"content/personae.html\" />
     </navPoint>\n"))
-    (setq navpoint-index (+ navpoint-index 1))))
+    (setq navpoint-index (+ navpoint-index 1))
+    ;; WHATHAPPENEDSOFAR
+    (when (file-exists-p whathappenedsofar-file-name)
+      (insert (concat "    <navPoint id=\"ncxcontent" (number-to-string navpoint-index) " \" playOrder=\"" (number-to-string navpoint-index) "\">
+      <navLabel>
+        <text>WAS BISHER GESCHAH</text>
+      </navLabel>
+      <content src=\"content/whathappenedsofar.html\" />
+    </navPoint>\n")))))
 
 ;;; --------------------------------------------------------
 ;;;

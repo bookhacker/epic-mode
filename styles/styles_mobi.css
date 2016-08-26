@@ -80,6 +80,19 @@ p.w2e_Standard_margin_top {
     margin-top:1em;
 }
 
+p.w2e_Normal {
+    text-indent: 1em;
+    padding-left: 0em;
+    margin:0em;
+}
+
+p.w2e_Normal_margin_top {
+    text-indent: 0em;
+    padding-left: 0em;
+    margin:0em;
+    margin-top:1em;
+}
+
 p.w2e_Schauplatz {
     text-align:center;
     font-size:1.2em;
