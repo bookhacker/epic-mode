@@ -11,6 +11,7 @@
 (defconst odt-heading-paragraph-prefix              "<text:h text:style-name=\"Heading_20_2\" text:outline-level=\"2\">")
 (defconst odt-standard-paragraph-prefix             "<text:p text:style-name=\"w2e_Standard\">")
 (defconst odt-normal-paragraph-prefix               "<text:p text:style-name=\"w2e_Normal\">")
+(defconst odt-normal-paragraph-first-paragraph-prefix "<text:p text:style-name=\"w2e_Normal_FirstParagraph\">")
 (defconst odt-standard-paragraph-continued-prefix   "<text:p text:style-name=\"w2e_Standard_Unterbrochen\">")
 (defconst odt-insertion-paragraph-prefix            "<text:p text:style-name=\"w2e_Einschub\">")
 (defconst odt-location-paragraph-prefix             "<text:p text:style-name=\"w2e_Schauplatz\">")
@@ -442,29 +443,10 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun odt-insert-whathappenedsofar_OLD ()
-  "Inserts content of autor file."
-  (when (file-exists-p whathappenedsofar-file-name)
-    (with-current-buffer (get-buffer-create odt-whathappenedsofar-buffer)
-      (find-file whathappenedsofar-file-name)
-      (goto-char 0)
-      (insert-formatted-line odt-legal-notice-paragraph-prefix)
-      (while (< (point) (point-max))
-	(setq current-whathappenedsofar-line (get-current-line))
-	(setq formatted-line (concat current-whathappenedsofar-line odt-line-break))
-	(insert-formatted-line formatted-line)
-	(forward-line))
-      ;; Letzen line-break entfernen
-      (with-current-buffer (get-buffer-create org-buffer-name)
-	(delete-backward-char (length odt-line-break)))
-      (insert-formatted-line (concat odt-paragraph-postfix "\n"))
-      (kill-buffer (current-buffer)))))
-
-;;; ---------------------------------------------------------
-;;;
 (defun  odt-insert-whathappenedsofar ()
   "Inserts content of whathappenedsofar file into html."
   (when (file-exists-p whathappenedsofar-file-name)
+    (setq is-first-paragraph t)
     (with-current-buffer (get-buffer-create odt-whathappenedsofar-buffer)
       (find-file whathappenedsofar-file-name)
       (goto-char 0)
@@ -480,7 +462,12 @@
 		;; remove location-style-prefix
 		(setq current-whathappenedsofar-line (substring current-whathappenedsofar-line (length location-style-prefix)))
 		(setq formatted-line (concat odt-location-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix)))
-	    (setq formatted-line (concat odt-normal-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix))))
+	    (if is-first-paragraph
+		(progn
+		  (setq formatted-line (concat odt-normal-paragraph-first-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix))
+		  (unless (string= current-whathappenedsofar-line "")
+		    (setq is-first-paragraph nil)))
+	      (setq formatted-line (concat odt-normal-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix)))))
 	(with-current-buffer (get-buffer-create org-buffer-name)
 	  (insert formatted-line)(newline))
 	(forward-line))
