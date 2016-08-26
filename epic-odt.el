@@ -441,7 +441,7 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun odt-insert-whathappenedsofar ()
+(defun odt-insert-whathappenedsofar_OLD ()
   "Inserts content of autor file."
   (when (file-exists-p whathappenedsofar-file-name)
     (with-current-buffer (get-buffer-create odt-whathappenedsofar-buffer)
@@ -457,6 +457,32 @@
       (with-current-buffer (get-buffer-create org-buffer-name)
 	(delete-backward-char (length odt-line-break)))
       (insert-formatted-line (concat odt-paragraph-postfix "\n"))
+      (kill-buffer (current-buffer)))))
+
+;;; ---------------------------------------------------------
+;;;
+(defun  odt-insert-whathappenedsofar ()
+  "Inserts content of whathappenedsofar file into html."
+  (when (file-exists-p whathappenedsofar-file-name)
+    (with-current-buffer (get-buffer-create odt-whathappenedsofar-buffer)
+      (find-file whathappenedsofar-file-name)
+      (goto-char 0)
+      (while (< (point) (point-max))
+	(setq current-whathappenedsofar-line (get-current-line))
+	(if (eq (get-style current-whathappenedsofar-line) heading-style)
+	    (progn
+	      ;; remove heading-style-prefix
+	      (setq current-whathappenedsofar-line (substring current-whathappenedsofar-line (length heading-style-prefix)))
+	      (setq formatted-line (concat odt-heading-paragraph-prefix current-whathappenedsofar-line odt-heading-postfix)))
+	  (if (eq (get-style current-whathappenedsofar-line) location-style)
+	      (progn
+		;; remove location-style-prefix
+		(setq current-whathappenedsofar-line (substring current-whathappenedsofar-line (length location-style-prefix)))
+		(setq formatted-line (concat odt-location-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix)))
+	    (setq formatted-line (concat odt-standard-paragraph-prefix current-whathappenedsofar-line odt-paragraph-postfix))))
+	(with-current-buffer (get-buffer-create org-buffer-name)
+	  (insert formatted-line)(newline))
+	(forward-line))
       (kill-buffer (current-buffer)))))
 
 ;;; ---------------------------------------------------------
