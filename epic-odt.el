@@ -28,6 +28,7 @@
 (defvar   org-file-name                             "")
 (defconst odt-personae-buffer                       "odt-personae-buffer")
 (defconst odt-autor-buffer                          "odt-autor-buffer")
+(defconst odt-whathappenedsofar-buffer              "odt-whathappenedsofar-buffer")
 (defconst meta-xml-buffer                           "meta-xml-buffer")
 (defconst odt-impressum-buffer                      "odt-impressum-buffer")
 
@@ -440,6 +441,26 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun odt-insert-whathappenedsofar ()
+  "Inserts content of autor file."
+  (when (file-exists-p whathappenedsofar-file-name)
+    (with-current-buffer (get-buffer-create odt-whathappenedsofar-buffer)
+      (find-file whathappenedsofar-file-name)
+      (goto-char 0)
+      (insert-formatted-line odt-legal-notice-paragraph-prefix)
+      (while (< (point) (point-max))
+	(setq current-whathappenedsofar-line (get-current-line))
+	(setq formatted-line (concat current-whathappenedsofar-line odt-line-break))
+	(insert-formatted-line formatted-line)
+	(forward-line))
+      ;; Letzen line-break entfernen
+      (with-current-buffer (get-buffer-create org-buffer-name)
+	(delete-backward-char (length odt-line-break)))
+      (insert-formatted-line (concat odt-paragraph-postfix "\n"))
+      (kill-buffer (current-buffer)))))
+
+;;; ---------------------------------------------------------
+;;;
 (defun odt-insert-empty-page ()
   "Inserts an empty page."
   (setq line (concat odt-empty-page-paragraph-prefix "TEST" odt-paragraph-postfix))
@@ -463,6 +484,7 @@
   (odt-insert-titel)
   (odt-insert-impressum-bod)
   (odt-insert-personae)
+  (odt-insert-whathappenedsofar)
   ;;(odt-insert-empty-page)
   ;;
   ;;
