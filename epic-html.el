@@ -229,10 +229,11 @@ title-combined)
     (insert html-toc-heading)(newline)
     ;; PERSONAE
     (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"personae.html\" style=\"text-decoration: none\">PERSONAE</a></p></li>"))
+    (insert html-toc-entry)(newline)
     ;; WHATHAPPENEDSOFAR
     (when (file-exists-p whathappenedsofar-file-name)
-      (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"whathappenedsofar.html\" style=\"text-decoration: none\">WAS BISHER GESCHAH</a></p></li>")))
-    (insert html-toc-entry)(newline)))
+      (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"whathappenedsofar.html\" style=\"text-decoration: none\">WAS BISHER GESCHAH</a></p></li>"))
+      (insert html-toc-entry)(newline))))
 
 ;;; ---------------------------------------------------------
 ;;;
