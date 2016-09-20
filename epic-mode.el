@@ -911,12 +911,12 @@
   ;; Simply setting back- and foreground to black creates an empty black line on the bottom.
   ;;
   (unless window-system
-    (setq mode-line-format "")
-    (set-face-foreground 'mode-line          background-color)
-    (set-face-background 'mode-line          background-color)
-    (set-face-background 'mode-line-inactive background-color)
+    ;; (setq mode-line-format "")
+    ;; (set-face-foreground 'mode-line          background-color)
+    ;; (set-face-background 'mode-line          background-color)
+    ;; (set-face-background 'mode-line-inactive background-color)
     
-    (set-face-background 'default            background-color)
+    ;; (set-face-background 'default            background-color)
     (set-face-foreground 'default            foreground-color)
     (set-face-foreground 'font-lock-function-name-face "blue"))
 
