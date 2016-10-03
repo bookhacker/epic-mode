@@ -43,8 +43,6 @@
 (defconst impressum-file-name                      "impressum")
 (defconst impressum-file-name-bod                  "impressum_bod")
 (defconst werbung-file-name                        "werbung.html")
-(defvar   margin-left                              29)
-(defvar   margin-right                             29)
 (defconst heading-style-prefix                     "* ")
 (defconst location-style-prefix                    "** ")
 (defconst persona-style-prefix                     "*** ")
@@ -910,15 +908,15 @@
   ;; hiding mode-line completely aligns last line to the left (bug?).
   ;; Simply setting back- and foreground to black creates an empty black line on the bottom.
   ;;
-  (unless window-system
+  ;;(unless window-system
     ;; (setq mode-line-format "")
     ;; (set-face-foreground 'mode-line          background-color)
     ;; (set-face-background 'mode-line          background-color)
     ;; (set-face-background 'mode-line-inactive background-color)
     
     ;; (set-face-background 'default            background-color)
-    (set-face-foreground 'default            foreground-color)
-    (set-face-foreground 'font-lock-function-name-face "blue"))
+    ;;(set-face-foreground 'default            foreground-color)
+    ;;(set-face-foreground 'font-lock-function-name-face "blue"))
 
   ;;
   ;; font-lock
@@ -935,10 +933,13 @@
   ;;
   ;; Center text input and 60 charachters per line through window margins
   ;;
-  (unless window-system
+  ;;(unless window-system
+(when (and (boundp 'epic-margin-left)
+	   (boundp 'epic-margin-right))
     (add-hook 'window-configuration-change-hook
-	      (lambda () (set-window-margins nil margin-left margin-right))
+	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
 	      nil 'local))
+   ;;)
 
   (setq word-wrap t)
 
