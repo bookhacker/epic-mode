@@ -922,6 +922,10 @@
   ;;
   ;; font-lock
   ;;
+  ;; to enable uncomment line
+  ;;  ;;(setq font-lock-defaults '(epic-mode-keywords))
+  ;; in (define-minor-mode epic-mode
+  ;;
   (setq epic-mode-keywords '((";;;[a-zäöüßÖÄÜß A-Z-=0-9.:-]*" . font-lock-string-face)
 			     ("#.*?#"           . font-lock-keyword-face)
 			     ("\\[.*?\\]"       . font-lock-function-name-face)
@@ -1101,7 +1105,7 @@
 	    ((kbd "\r") .  (lambda () (interactive) (on-enter))))
   (initialize)
   (load-book-information)
-  (setq font-lock-defaults '(epic-mode-keywords))
+  ;;(setq font-lock-defaults '(epic-mode-keywords))
   (font-lock-mode 1)
   ;; for text-input
   (add-hook 'post-self-insert-hook 'post-self-insert-hook-function t t)
