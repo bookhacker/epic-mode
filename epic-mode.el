@@ -911,9 +911,10 @@
   ;;
   ;;(unless window-system
     ;; (setq mode-line-format "")
-    ;; (set-face-foreground 'mode-line          background-color)
-    ;; (set-face-background 'mode-line          background-color)
-    ;; (set-face-background 'mode-line-inactive background-color)
+  
+  ;; (set-face-foreground 'mode-line          "white")
+  ;; (set-face-background 'mode-line          "black")
+  ;; (set-face-background 'mode-line-inactive "black")
     
     ;; (set-face-background 'default            background-color)
     ;;(set-face-foreground 'default            foreground-color)
@@ -1105,7 +1106,7 @@
 	    ((kbd "\r") .  (lambda () (interactive) (on-enter))))
   (initialize)
   (load-book-information)
-  ;;(setq font-lock-defaults '(epic-mode-keywords))
+  (setq font-lock-defaults '(epic-mode-keywords))
   (font-lock-mode 1)
   ;; for text-input
   (add-hook 'post-self-insert-hook 'post-self-insert-hook-function t t)
