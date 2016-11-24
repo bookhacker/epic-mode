@@ -930,7 +930,7 @@
   (setq epic-mode-keywords '((";;;[a-zäöüßÖÄÜß A-Z-=0-9.:-]*" . font-lock-string-face)
 			     ("#.*?#"           . font-lock-keyword-face)
 			     ("\\[.*?\\]"       . font-lock-function-name-face)
-			     ("^(.*?)$"         . font-lock-keyword-face)
+			     ("(.*?)"         . font-lock-keyword-face)
 			     ("^  (.*?)$"       . font-lock-keyword-face)
 			     ("^\\* .*"         . font-lock-builtin-face)
 			     ("^\\*\\* .*"      . font-lock-builtin-face)
