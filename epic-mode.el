@@ -903,7 +903,7 @@
     (menu-bar-mode -1)
     ;;    (scroll-bar-mode -1)
     )
-
+  (set-frame-parameter nil 'fullscreen 'fullboth)
   (setq truncate-lines nil)
   ;;
   ;; hiding mode-line completely aligns last line to the left (bug?).
