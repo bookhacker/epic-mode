@@ -1,6 +1,7 @@
 ;;;; -*- mode:emacs-lisp;coding:utf-8 -*-
 (defconst library-name                              "epic-mode")
 (defvar   epic-configuration-file                   "")
+(defvar epic-fullscreen nil)
 (defvar   library-path                              "")
 (defvar   library-directory                         "")
 (defconst no-template-selected                      0)
@@ -903,7 +904,8 @@
     (menu-bar-mode -1)
     ;;    (scroll-bar-mode -1)
     )
-  (set-frame-parameter nil 'fullscreen 'fullboth)
+  (when epic-fullscreen
+    (set-frame-parameter nil 'fullscreen 'fullboth))
   (setq truncate-lines nil)
   ;;
   ;; hiding mode-line completely aligns last line to the left (bug?).
