@@ -230,7 +230,8 @@
         <text>WAS BISHER GESCHAH</text>
       </navLabel>
       <content src=\"content/whathappenedsofar.html\" />
-    </navPoint>\n")))))
+    </navPoint>\n"))
+    (setq navpoint-index (+ navpoint-index 1)))))
 
 ;;; --------------------------------------------------------
 ;;;
