@@ -49,7 +49,7 @@
 (defconst persona-style-prefix                     "*** ")
 (defvar   isbn                                     nil)
 (defvar   epic-design-off                          nil)
-(defvar   epic-mode-keywords                       "")
+;;(defvar   epic-mode-keywords                       "")
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -972,7 +972,17 @@
  '(window-divider-first-pixel ((t (:foreground "gray97"))))
  '(window-divider-last-pixel ((t (:foreground "gray97")))))
 
-
+  ;;
+  ;; Center text input and 60 charachters per line through window margins
+  ;;
+  ;;(unless window-system
+(when (and (boundp 'epic-margin-left)
+	   (boundp 'epic-margin-right))
+    (add-hook 'window-configuration-change-hook
+	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
+	      nil 'local))
+;;)
+) ;; unless epic-design-off
 
   ;;
   ;; font-lock
@@ -990,17 +1000,6 @@
 			     ("^\\*\\* .*"      . font-lock-builtin-face)
 			     ("^\\*\\*\\* .*"   . font-lock-builtin-face)))
 
-  ;;
-  ;; Center text input and 60 charachters per line through window margins
-  ;;
-  ;;(unless window-system
-(when (and (boundp 'epic-margin-left)
-	   (boundp 'epic-margin-right))
-    (add-hook 'window-configuration-change-hook
-	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
-	      nil 'local))
-;;)
-) ;; unless epic-design-off
 
   (setq word-wrap t)
 
@@ -1161,8 +1160,8 @@
 	    ((kbd "\r") .  (lambda () (interactive) (on-enter))))
   (initialize)
   (load-book-information)
-  (unless (string= epic-mode-keywords "")
-    (setq font-lock-defaults '(epic-mode-keywords)))
+
+    (setq font-lock-defaults '(epic-mode-keywords))
   (font-lock-mode 1)
   ;; for text-input
   (add-hook 'post-self-insert-hook 'post-self-insert-hook-function t t)
