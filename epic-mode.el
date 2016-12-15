@@ -48,6 +48,8 @@
 (defconst location-style-prefix                    "** ")
 (defconst persona-style-prefix                     "*** ")
 (defvar   isbn                                     nil)
+(defvar   epic-design-off                          nil)
+(defvar   epic-mode-keywords                       "")
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -896,6 +898,7 @@
 ;;;
 (defun initialize ()
   "Performs initialization of epic-mode."
+  (unless epic-design-off
   ;;
   ;; Disable distractions
   ;;
@@ -920,7 +923,56 @@
     
     ;; (set-face-background 'default            background-color)
     ;;(set-face-foreground 'default            foreground-color)
-    ;;(set-face-foreground 'font-lock-function-name-face "blue"))
+  ;;(set-face-foreground 'font-lock-function-name-face "blue"))
+  ;;; ---------------------------------------------------------
+;;; Disable distractions
+;;;
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(setq-default mode-line-format nil)
+
+;;; ---------------------------------------------------------
+;;;  Farben
+;;;
+;;(add-to-list 'default-frame-alist '(foreground-color . "#333333"))
+;;(add-to-list 'default-frame-alist '(background-color . "#f6f6f6"))
+
+;;(add-to-list 'default-frame-alist '(background-color . "#f7f7f7"))
+(add-to-list 'default-frame-alist '(foreground-color . "gray22"))
+(add-to-list 'default-frame-alist '(background-color . "gray97"))
+
+;;; ---------------------------------------------------------
+;;; cursor
+;;;
+(setq-default cursor-type 'bar)
+(set-cursor-color "#333333")
+
+;;; ---------------------------------------------------------
+;;; Zeilenabstand
+;;;
+(setq-default line-spacing 10)
+
+;;; ---------------------------------------------------------
+;;; Schriftart
+;;;
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "gray97" :foreground "gray22" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 280 :width normal :foundry "nil" :family "Georgia"))))
+ '(border ((t nil)))
+ '(font-lock-builtin-face ((t (:foreground "gray22" :weight bold :height 1.2))))
+ '(font-lock-keyword-face ((t (:foreground "gray22" :slant italic))))
+ '(fringe ((t (:background "gray97"))))
+ '(mode-line ((t (:background "black" :foreground "gray97"))))
+ '(vertical-border ((t (:foreground "gray97"))))
+ '(window-divider ((t (:foreground "gray97"))))
+ '(window-divider-first-pixel ((t (:foreground "gray97"))))
+ '(window-divider-last-pixel ((t (:foreground "gray97")))))
+
+
 
   ;;
   ;; font-lock
@@ -947,7 +999,8 @@
     (add-hook 'window-configuration-change-hook
 	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
 	      nil 'local))
-   ;;)
+;;)
+) ;; unless epic-design-off
 
   (setq word-wrap t)
 
@@ -1108,7 +1161,8 @@
 	    ((kbd "\r") .  (lambda () (interactive) (on-enter))))
   (initialize)
   (load-book-information)
-  (setq font-lock-defaults '(epic-mode-keywords))
+  (unless (string= epic-mode-keywords "")
+    (setq font-lock-defaults '(epic-mode-keywords)))
   (font-lock-mode 1)
   ;; for text-input
   (add-hook 'post-self-insert-hook 'post-self-insert-hook-function t t)
