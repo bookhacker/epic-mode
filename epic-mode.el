@@ -48,7 +48,7 @@
 (defconst location-style-prefix                    "** ")
 (defconst persona-style-prefix                     "*** ")
 (defvar   isbn                                     nil)
-(defvar   epic-design-off                          nil)
+(defvar   epic-design-off                          t)
 ;;(defvar   epic-mode-keywords                       "")
 
 ;;; ---------------------------------------------------------
