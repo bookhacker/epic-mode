@@ -898,18 +898,24 @@
 ;;;
 (defun initialize ()
   "Performs initialization of epic-mode."
+  (when (and (boundp 'epic-margin-left)
+	   (boundp 'epic-margin-right))
+    (add-hook 'window-configuration-change-hook
+	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
+	      nil 'local))
+  
   (unless epic-design-off
-  ;;
-  ;; Disable distractions
-  ;;
-  (unless window-system
-    ;;    (tool-bar-mode -1)
-    (menu-bar-mode -1)
-    ;;    (scroll-bar-mode -1)
-    )
-  (when epic-fullscreen
-    (set-frame-parameter nil 'fullscreen 'fullboth))
-  (setq truncate-lines nil)
+    ;;
+    ;; Disable distractions
+    ;;
+    (unless window-system
+      ;;    (tool-bar-mode -1)
+      (menu-bar-mode -1)
+      ;;    (scroll-bar-mode -1)
+      )
+    (when epic-fullscreen
+      (set-frame-parameter nil 'fullscreen 'fullboth))
+    (setq truncate-lines nil)
   ;;
   ;; hiding mode-line completely aligns last line to the left (bug?).
   ;; Simply setting back- and foreground to black creates an empty black line on the bottom.
@@ -976,11 +982,11 @@
   ;; Center text input and 60 charachters per line through window margins
   ;;
   ;;(unless window-system
-(when (and (boundp 'epic-margin-left)
-	   (boundp 'epic-margin-right))
-    (add-hook 'window-configuration-change-hook
-	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
-	      nil 'local))
+;; (when (and (boundp 'epic-margin-left)
+;; 	   (boundp 'epic-margin-right))
+;;     (add-hook 'window-configuration-change-hook
+;; 	      (lambda () (set-window-margins nil epic-margin-left epic-margin-right))
+;; 	      nil 'local))
 ;;)
 ) ;; unless epic-design-off
 
