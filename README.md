@@ -22,3 +22,48 @@ git clone https://github.com/bookhacker/epic-mode.git
 (defvar epic-margin-left 25)
 (defvar epic-margin-right 25)
 ````
+
+## Usage
+
+epic-mode writes in a screenplay like format and does different things to make your life easier (especially when inputing text), so you don't have to care about putting in spaces or Caps where epic-mode knows what you mean.
+
+### What you need to know first
+
+The general format when writing in epic-mode looks kinda like this:
+
+````
+* CHAPTER - Optional chapter subtitle
+** Location
+*** Personae
+
+NAME (what he does).
+  Text Text Text.
+NAME. Text Text.
+NAME. Text Text
+  Text Text.
+NAME (what she does).
+  Text.
+
+** Location.
+*** Personae.
+
+NAME. Text Text
+  Text Text.
+NAME (what he does).
+  Text.
+
+*** Personae.
+
+NAME (what she does).
+  Text Text.
+````
+
+
+
+### When starting with an empty file
+
+When you start with an empty file, you HAVE to put in a single asterisk followed by a `SPACE`:
+
+````
+
+````
