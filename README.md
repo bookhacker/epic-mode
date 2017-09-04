@@ -83,7 +83,7 @@ which follow each other, which means, a `* CHAPTER`-heading is always followed b
 
 When you start a line with a single asterisk followed by a `SPACE`, epic-mode starts to write in `CAPS` until you hit `ENTER`. Now epic-mode inserts ` - ` and wants you to put in the chapter subtitle. The first character of the subtitle is in capitals, the second isn't anymore.
 
-If you don't want a chapter subtitle, just hit `ENTER` a second time and epic-mode jumps to the next line to start a personae heading (which means it automatically insert `** ` so you don't to type it).
+If you don't want a chapter subtitle, just hit `ENTER` a second time and epic-mode jumps to the next line to start a personae heading (which means it automatically insert `** ` so you don't have to type it).
 
 #### Heading `** Location`
 
