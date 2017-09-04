@@ -3,7 +3,7 @@
 This is epic-mode. An Emacs mode to write stunning epics in a screenplay like format.
 
 ## Installation
-* Clone files (for example to ~/.emacs.d/epic-mode/):
+* Clone files (for example to ~/.emacs.d/epic-mode):
 
 ````
 cd ~/.emacs.d
