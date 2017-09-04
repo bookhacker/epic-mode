@@ -67,9 +67,29 @@ NAME (what he does).
 
 As you see, some text is written in `CAPS`, there are parenthesis, two spaces at beginning of some lines, headings start with one, two or three asterisks. The good message: You don't have to care about this. epic-mode does the most for you automatically, which means, you have to know how inputing text works:
 
-### Headings
+### Writing Headings
 
-### Paragraphs
+epic-mode knows three styles of headings. They are
+
+````
+* CHAPTER - With optional chapter title
+** Personae.
+*** Location.
+````
+
+which follow each other, which means, a `* CHAPTER`-heading is always followed by a `** Location`-heading which itself is always followed by a `*** Personae`-heading when you press `ENTER` at the end of a heading.
+
+#### Heading * CHAPTER - With optional chapter subtitle
+
+When you start a line with a single asterisk followed by a `SPACE`, epic-mode starts to write in `CAPS` until you hit `ENTER`. Now epic-mode inserts ` - ` and wants you to put in the chapter subtitle. The first character of the subtitle is in capitals, the second isn't anymore.
+
+If you don't want a chapter subtitle, just hit `ENTER` a second time and epic-mode jumps to the next line to start a personae heading.
+
+#### Heading ** Personae
+
+#### Heading *** Location
+
+### Writing Paragraphs
 
 ### When starting with an empty file
 
