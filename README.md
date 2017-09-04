@@ -7,7 +7,6 @@ This is epic-mode. An Emacs mode to write stunning epics in a screenplay like fo
 
 ````
 cd ~/.emacs.d
-
 git clone https://github.com/bookhacker/epic-mode.git
 ````
 
