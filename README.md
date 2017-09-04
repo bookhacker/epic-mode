@@ -33,8 +33,8 @@ The general format when writing in epic-mode looks kinda like this:
 
 ````
 * CHAPTER - Optional chapter subtitle
-** Location
-*** Personae
+** Location.
+*** Personae.
 
 NAME (what he does).
   Text Text Text.
@@ -56,9 +56,20 @@ NAME (what he does).
 
 NAME (what she does).
   Text Text.
+
+* NEXT CHAPTER
+** Location.
+*** Personae.
+
+NAME (what he does).
+  Text.
 ````
 
+As you see, some text is written in `CAPS`, there are parenthesis, two spaces at beginning of some lines, headings start with one, two or three asterisks. The good message: You don't have to care about this. epic-mode does the most for you automatically, which means, you have to know how inputing text works:
 
+### Headings
+
+### Paragraphs
 
 ### When starting with an empty file
 
