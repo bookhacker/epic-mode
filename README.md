@@ -11,7 +11,7 @@ cd ~/.emacs.d
 git clone https://github.com/bookhacker/epic-mode.git
 ````
 
-* To load epic-mode when opening a file ending on `.epos` with side margins of 25 characters (for example in ~/.emacs.d/init.el):
+* To load epic-mode when opening a file ending on `.epos` with side margins of 25 characters, add to your Emacs configuration file (for example in ~/.emacs.d/init.el):
 
 ````
 ;;
