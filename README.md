@@ -93,6 +93,8 @@ When you end a `* CHAPTER - With optional subtitle`-heading by hitting `ENTER`, 
 
 #### Heading `*** Personae`
 
+When you start a line with three asterisks followed by a `SPACE`, epic-mode switches to a `*** Personae`-heading. There is nothing special to know about it. There are no automatic caps etc. When ending a `*** Personae`-heading with `ENTER`, epic-mode inserts an empty line and starts the first paragraph.
+
 ### Writing Paragraphs
 
 ### When starting with an empty file
