@@ -49,6 +49,7 @@
 (defconst persona-style-prefix                     "*** ")
 (defvar   isbn                                     nil)
 (defvar   epic-design-off                          t)
+(defvar   epic-dictation                           nil)
 ;;(defvar   epic-mode-keywords                       "")
 
 ;;; ---------------------------------------------------------
@@ -392,7 +393,8 @@
     (insert last-char))
   (cond
    ((eq last-char 46) ; . 46
-    (insert " ")
+    (unless epic-dictation
+    (insert " "))
     (setq uppercase-input t)
     (setq current-on-enter-function 'standard-on-enter-function)
     (setq current-output-function   'standard-text-output-function))))
