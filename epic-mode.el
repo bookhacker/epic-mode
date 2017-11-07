@@ -1169,7 +1169,7 @@
   (initialize)
   (load-book-information)
 
-    (setq font-lock-defaults '(epic-mode-keywords))
+  (setq font-lock-defaults '(epic-mode-keywords))
   (font-lock-mode 1)
   ;; for text-input
   (add-hook 'post-self-insert-hook 'post-self-insert-hook-function t t)
