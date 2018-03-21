@@ -46,10 +46,12 @@
   "Returns a combined title from book information."
 (setq title-combined "")
 (setq title-combined (concat title-combined title))
-(unless (eq episoda-number "")
-  (setq title-combined (concat title-combined " - Episoda " episoda-number ": " episoda-title)))
-(when (eq episoda-number "")
+(unless (eq subtitle "")
   (setq title-combined (concat title-combined " - " subtitle)))
+(unless (eq episoda-number "")
+  (if (eq subtitle "")
+      (setq title-combined (concat title-combined " - Episoda " episoda-number ": " episoda-title))
+    (setq title-combined (concat title-combined " Episoda " episoda-number ": " episoda-title))))
 title-combined)
 
 ;;; ---------------------------------------------------------
