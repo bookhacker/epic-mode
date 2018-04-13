@@ -31,6 +31,7 @@
 (defvar   last-style                                nil)
 (defconst personae-buffer                           "personae-buffer")
 (defconst whathappenedsofar-buffer                  "whathappenedsofar-buffer")
+(defconst appendix-buffer                           "appendix-buffer")
 (defconst impressum-buffer                          "impressum-buffer")
 (defconst fnreturn-prefix                           "l" "Prefix for footnote return anchors.")
 (defvar   has-second-level                          nil "Defines if current first level heading has second-level.")
@@ -342,6 +343,42 @@ title-combined)
     (when has-footnote
       (setq line (html-insert-fnreturn line)))
     line)
+
+;;; ---------------------------------------------------------
+;;;
+(defun create-appendix ()
+  "Inserts content of appendix file into html."
+  (when (file-exists-p appendix-file-name)
+    (with-current-buffer (get-buffer-create html-buffer-name)
+      (create-html-header))
+    (with-current-buffer (get-buffer-create appendix-buffer)
+      (find-file appendix-file-name)
+      (goto-char 0)
+      (while (< (point) (point-max))
+	(setq current-appendix-line (get-current-line))
+	(if (eq (get-style current-appendix-line) empty-line-style)
+	    (setq is-first-line t)
+	  (if (eq (get-style current-appendix-line) heading-style)
+	      (progn
+		(setq heading-text current-appendix-line)
+		;; Remove heading-style-prefix
+		(setq current-appendix-line (substring current-appendix-line (length heading-style-prefix)))
+		(setq formatted-line (concat html-heading-paragraph-prefix current-appendix-line html-heading-postfix)))
+	    (if (eq (get-style current-appendix-line) location-style)
+		(progn
+		  (setq heading-text current-appendix-line)
+		  ;; Remove location-style-prefix
+		  (setq current-appendix-line (substring current-appendix-line (length location-style-prefix)))
+		  (setq formatted-line (concat html-location-paragraph-prefix current-appendix-line html-paragraph-postfix)))
+	      (setq formatted-line (concat html-normal-paragraph-margin-top-prefix current-appendix-line html-paragraph-postfix))))
+	  (with-current-buffer (get-buffer-create html-buffer-name)
+	    (insert formatted-line)(newline)))
+	(forward-line))
+      (with-current-buffer (get-buffer-create html-buffer-name)
+	(setq html-filename (concat (file-name-as-directory html-directory) "appendix.html"))
+	(create-html-footer)
+	(write-file html-filename nil))
+      (kill-buffer (current-buffer)))))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -686,4 +723,5 @@ title-combined)
   (create-title-page)
   (create-personae-page)
   (create-whathappenedsofar-page)
-  (iterate-html-buffer))
+  (iterate-html-buffer)
+  (create-whathappenedsofar-page))

@@ -30,6 +30,7 @@
 (defvar   org-file-name                             "")
 (defconst odt-personae-buffer                       "odt-personae-buffer")
 (defconst odt-autor-buffer                          "odt-autor-buffer")
+(defconst odt-appendix-buffer                       "odt-appendix-buffer")
 (defconst odt-whathappenedsofar-buffer              "odt-whathappenedsofar-buffer")
 (defconst meta-xml-buffer                           "meta-xml-buffer")
 (defconst odt-impressum-buffer                      "odt-impressum-buffer")
@@ -309,7 +310,7 @@
 (defun insert-formatted-line (line)
   "Inserts formatted-line into org-buffer."
   (with-current-buffer (get-buffer-create org-buffer-name)
-      (insert line)))
+    (insert line)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -423,6 +424,32 @@
 
 ;;; ---------------------------------------------------------
 ;;;
+(defun  odt-insert-appendix ()
+  "Inserts content of appendix file into html."
+  (when (file-exists-p appendix-file-name)
+    (with-current-buffer (get-buffer-create odt-appendix-buffer)
+      (find-file appendix-file-name)
+      (goto-char 0)
+      (while (< (point) (point-max))
+	(setq current-appendix-line (get-current-line))
+	(if (eq (get-style current-appendix-line) heading-style)
+	    (progn
+	      ;; remove heading-style-prefix
+	      (setq current-appendix-line (substring current-appendix-line (length heading-style-prefix)))
+	      (setq formatted-line (concat odt-heading-paragraph-prefix current-appendix-line odt-heading-postfix)))
+	  (if (eq (get-style current-appendix-line) location-style)
+	      (progn
+		;; remove location-style-prefix
+		(setq current-appendix-line (substring current-appendix-line (length location-style-prefix)))
+		(setq formatted-line (concat odt-location-paragraph-prefix current-appendix-line odt-paragraph-postfix)))
+	    (setq formatted-line (concat odt-normal-paragraph-first-paragraph-prefix current-appendix-line odt-paragraph-postfix))))	
+	(with-current-buffer (get-buffer-create org-buffer-name)
+	  (insert formatted-line)(newline))
+	(forward-line))
+      (kill-buffer (current-buffer)))))
+
+;;; ---------------------------------------------------------
+;;;
 (defun odt-insert-autor ()
   "Inserts content of autor file."
   (when (file-exists-p autor-file-name)
@@ -489,20 +516,12 @@
   (goto-char 1)
   (setq last-line nil)
   (setq last-style nil)
-  ;;
-  ;;
-  ;;
-  ;; Titel
   (odt-insert-schmutztitel)
   (odt-insert-schmutztitel-rueckseite)
   (odt-insert-titel)
   (odt-insert-impressum-bod)
   (odt-insert-personae)
   (odt-insert-whathappenedsofar)
-  ;;(odt-insert-empty-page)
-  ;;
-  ;;
-  ;;
   (while (< (point)(point-max))
     (setq current-line (get-current-line))
     (setq current-style (get-style current-line))
@@ -516,15 +535,9 @@
     (setq lines-iterated (+ lines-iterated 1))
     (message (format "lines-iterated: %d" lines-iterated))
     (forward-line))
-  ;;
-  ;; chapters
-  ;;
-  ;; optional:
-  ;; (odt-insert-about)
-  ;; (odt-insert-website)
-  ;; (odt-insert-next-episoda)
   (with-current-buffer (get-buffer-create org-buffer-name)
     (unless (eq current-style insertion-style)
       (insert odt-paragraph-postfix))
-      (newline))
+    (newline))
+  (odt-insert-appendix)
   (odt-insert-autor))

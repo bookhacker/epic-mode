@@ -41,6 +41,7 @@
 (defconst personae-file-name                       "personae")
 (defconst autor-file-name                          "autor")
 (defconst whathappenedsofar-file-name              "whathappenedsofar")
+(defconst appendix-file-name                       "appendix")
 (defconst impressum-file-name                      "impressum")
 (defconst impressum-file-name-bod                  "impressum_bod")
 (defconst werbung-file-name                        "werbung.html")
