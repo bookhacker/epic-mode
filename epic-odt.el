@@ -24,6 +24,8 @@
 (defconst odt-line-break                            "<text:line-break/>")
 (defconst odt-italics-prefix                        "<text:span text:style-name=\"w2e_Kursiv\">")
 (defconst odt-italics-postfix                       "</text:span>")
+(defconst odt-bold-prefix                           "<text:span text:style-name=\"w2e_bold\">")
+(defconst odt-bold-postfix                          "</text:span>")
 (defconst odt-footnote-prefix                       "<text:note text:id=\"ftnX\" text:note-class=\"footnote\"><text:note-citation>X</text:note-citation><text:note-body><text:p text:style-name=\"P95\">")
 (defconst odt-footnote-postfix                      "</text:p></text:note-body></text:note>")
 (defconst org-buffer-name                           "org-buffer")
@@ -193,6 +195,29 @@
 	     (eq last-char-was-uppercase nil))
     (setq new-string (concat new-string odt-italics-postfix)))
   new-string)
+
+;;; ---------------------------------------------------------
+;;;
+(defun apply-bold (line)
+  "Replaces * with bold-prefx and bold-postfix."
+  (setq index 0)
+  (setq new-string "")
+  (with-current-buffer (get-buffer-create org-buffer-name)
+    (while (< index (string-width line))
+      (setq current-char (aref line index))
+      (if (= current-char 42) ; 42 *
+	  (progn
+	    (setq new-string (substring new-string 0))
+	    (if (eq bold-input nil)
+		(progn
+		  (setq new-string (concat new-string odt-bold-prefix))
+		  (setq bold-input t))
+	      (setq new-string (concat new-string odt-bold-postfix))
+	      (setq bold-input nil)))
+	(setq new-string (concat new-string (char-to-string current-char))))
+      (setq index (+ index 1)))
+    (setq line new-string))
+  line)
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -424,7 +449,7 @@
 
 ;;; ---------------------------------------------------------
 ;;;
-(defun  odt-insert-appendix ()
+(defun odt-insert-appendix ()
   "Inserts content of appendix file into html."
   (when (file-exists-p appendix-file-name)
     (with-current-buffer (get-buffer-create odt-appendix-buffer)
@@ -442,7 +467,9 @@
 		;; remove location-style-prefix
 		(setq current-appendix-line (substring current-appendix-line (length location-style-prefix)))
 		(setq formatted-line (concat odt-location-paragraph-prefix current-appendix-line odt-paragraph-postfix)))
-	    (setq formatted-line (concat odt-normal-paragraph-first-paragraph-prefix current-appendix-line odt-paragraph-postfix))))	
+	    (setq formatted-line (apply-bold current-appendix-line))
+	    (setq formatted-line (apply-italics formatted-line))
+	    (setq formatted-line (concat odt-normal-paragraph-first-paragraph-prefix formatted-line odt-paragraph-postfix))))	
 	(with-current-buffer (get-buffer-create org-buffer-name)
 	  (insert formatted-line)(newline))
 	(forward-line))

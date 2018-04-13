@@ -19,6 +19,8 @@
 (defconst html-paragraph-postfix                    "</p>")
 (defconst html-heading-postfix                      "</h2>")
 (defconst html-line-break                           "<br/>")
+(defconst html-italics-prefix                       "<strong>")
+(defconst html-italics-postfix                      "</strong>")
 (defconst html-italics-prefix                       "<i>")
 (defconst html-italics-postfix                      "</i>")
 (defconst html-footnote-prefix                      "<text:note text:id=\"ftnX\" text:note-class=\"footnote\"><text:note-citation>X</text:note-citation><text:note-body><text:p text:style-name=\"P95\">")
@@ -45,22 +47,22 @@
 ;;;
 (defun get-title ()
   "Returns a combined title from book information."
-(setq title-combined "")
-(setq title-combined (concat title-combined title))
-(unless (eq subtitle "")
-  (setq title-combined (concat title-combined " - " subtitle)))
-(unless (eq episoda-number "")
-  (if (eq subtitle "")
-      (setq title-combined (concat title-combined " - Episoda " episoda-number ": " episoda-title))
-    (setq title-combined (concat title-combined " Episoda " episoda-number ": " episoda-title))))
-title-combined)
+  (setq title-combined "")
+  (setq title-combined (concat title-combined title))
+  (unless (eq subtitle "")
+    (setq title-combined (concat title-combined " - " subtitle)))
+  (unless (eq episoda-number "")
+    (if (eq subtitle "")
+	(setq title-combined (concat title-combined " - Episoda " episoda-number ": " episoda-title))
+      (setq title-combined (concat title-combined " Episoda " episoda-number ": " episoda-title))))
+  title-combined)
 
 ;;; ---------------------------------------------------------
 ;;;
 (defun create-html-header ()
   "Inserts html-header."
   (insert (concat
-   "<?xml version=\"1.0\" ?>
+	   "<?xml version=\"1.0\" ?>
 <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"
     \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\">
@@ -78,6 +80,29 @@ title-combined)
   "Inserts html-footer."
   (insert "</body>
 </html>"))
+
+;;; ---------------------------------------------------------
+;;;
+(defun html-apply-bold (line)
+  "Replaces * with bold-prefx and bold-postfix."
+  (setq index 0)
+  (setq new-string "")
+  (with-current-buffer (get-buffer-create html-buffer-name)
+    (while (< index (string-width line))
+      (setq current-char (aref line index))
+      (if (= current-char 42) ; 42 *
+	  (progn
+	    (setq new-string (substring new-string 0))
+	    (if (eq bold-input nil)
+		(progn
+		  (setq new-string (concat new-string html-bold-prefix))
+		  (setq bold-input t))
+	      (setq new-string (concat new-string html-bold-postfix))
+	      (setq bold-input nil)))
+	(setq new-string (concat new-string (char-to-string current-char))))
+      (setq index (+ index 1)))
+    (setq line new-string))
+  line)
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -127,20 +152,20 @@ title-combined)
    ;; standard-template
    ((eq style standard-style)
     (if (string-prefix-p indentation line)
-;;	(setq line (concat (substring line 2) html-line-break))
+	;;	(setq line (concat (substring line 2) html-line-break))
 	(setq line (concat html-hang-indent-paragraph-prefix (substring line 2) html-paragraph-postfix))
       ;; everything between ( and ) in italics.
       (setq line-to-insert (replace-regexp-in-string "(" (concat html-italics-prefix "(") line))
       (setq line-to-insert (replace-regexp-in-string ")" (concat")"  html-italics-postfix) line-to-insert))
-;;      (setq line (concat html-standard-paragraph-prefix line-to-insert html-line-break))))
+      ;;      (setq line (concat html-standard-paragraph-prefix line-to-insert html-line-break))))
       (setq line (concat html-hang-indent-first-paragraph-prefix line-to-insert html-paragraph-postfix))))
    ;; standard-template-continued
    ((eq style standard-interrupted-style)
-;;      (setq line (concat (substring line 2) html-line-break)))
-      (setq line (concat html-hang-indent-paragraph-prefix (substring line 2) html-paragraph-postfix)))
+    ;;      (setq line (concat (substring line 2) html-line-break)))
+    (setq line (concat html-hang-indent-paragraph-prefix (substring line 2) html-paragraph-postfix)))
    ;; insertion-template
    ((eq style insertion-style)
-;;    (setq line (concat html-italics-prefix (substring line 2) html-italics-postfix html-line-break)))
+    ;;    (setq line (concat html-italics-prefix (substring line 2) html-italics-postfix html-line-break)))
     (setq line (concat html-hang-indent-paragraph-prefix html-italics-prefix (substring line 2) html-italics-postfix html-paragraph-postfix)))
    ;; heading template
    ((eq style heading-style)
@@ -148,7 +173,7 @@ title-combined)
     (setq line (concat html-heading-paragraph-prefix line html-heading-postfix)))
    ;; location-template
    ((eq style location-style)
-;;neu
+    ;;neu
     (unless (eq last-style heading-style)
       (setq line (html-insert-fnreturn line)))
     (setq line (concat html-location-paragraph-prefix line html-paragraph-postfix)))
@@ -166,7 +191,7 @@ title-combined)
 (defun html-insert-line (line)
   "Inserts formatted-line into html-buffer."
   (with-current-buffer (get-buffer-create html-buffer-name)
-      (insert line)(newline)))
+    (insert line)(newline)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -314,35 +339,35 @@ title-combined)
   (setq new-string "")
   (setq is-footnote-text nil)
   (setq has-footnote nil)
-    (while (< index (string-width line))
-      (setq current-char (aref line index))
-      (if (= current-char 91) ; 91 [
-	  (progn
-	    (when (eq (get-buffer html-footnotes-buffer-name) nil)
-	      (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
-		(create-html-header)
-		(insert (concat html-heading-paragraph-prefix "Fußnoten" html-heading-postfix "\n"))))
-	    (setq has-footnote t)
-	    (setq is-footnote-text t)
-	    (setq new-string (substring new-string 0))
-	    (setq new-string (concat new-string "<a href=\"" html-footnotes-file-name "#footnote-" (number-to-string footnote-index) "\"><sup>" (number-to-string footnote-index) "</sup></a>"))
+  (while (< index (string-width line))
+    (setq current-char (aref line index))
+    (if (= current-char 91) ; 91 [
+	(progn
+	  (when (eq (get-buffer html-footnotes-buffer-name) nil)
 	    (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
-	      (insert (concat "<div class=\"footnote\" id=\"footnote-" (number-to-string footnote-index) "\"><p class=\"fnparagraph\">" (number-to-string footnote-index) "&nbsp;"))))
-	(if (= current-char 93) ; 93 ]
-	    (progn
-	      (setq is-footnote-text nil)
-	      (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
-		(insert (concat "&nbsp;<a href=\"" (concat (number-to-string html-file-index) ".html#" fnreturn-prefix (number-to-string lines-iterated) "\"><strong>&#x21B5;</strong></a></p>\n</div>\n"))))
-	      (setq footnote-index (+ footnote-index 1)))
-	  (if is-footnote-text
-	      (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
-		(insert (char-to-string current-char)))
-	    (setq new-string (concat new-string (char-to-string current-char))))))
-      (setq index (+ index 1)))
-    (setq line new-string) 
-    (when has-footnote
-      (setq line (html-insert-fnreturn line)))
-    line)
+	      (create-html-header)
+	      (insert (concat html-heading-paragraph-prefix "Fußnoten" html-heading-postfix "\n"))))
+	  (setq has-footnote t)
+	  (setq is-footnote-text t)
+	  (setq new-string (substring new-string 0))
+	  (setq new-string (concat new-string "<a href=\"" html-footnotes-file-name "#footnote-" (number-to-string footnote-index) "\"><sup>" (number-to-string footnote-index) "</sup></a>"))
+	  (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
+	    (insert (concat "<div class=\"footnote\" id=\"footnote-" (number-to-string footnote-index) "\"><p class=\"fnparagraph\">" (number-to-string footnote-index) "&nbsp;"))))
+      (if (= current-char 93) ; 93 ]
+	  (progn
+	    (setq is-footnote-text nil)
+	    (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
+	      (insert (concat "&nbsp;<a href=\"" (concat (number-to-string html-file-index) ".html#" fnreturn-prefix (number-to-string lines-iterated) "\"><strong>&#x21B5;</strong></a></p>\n</div>\n"))))
+	    (setq footnote-index (+ footnote-index 1)))
+	(if is-footnote-text
+	    (with-current-buffer (get-buffer-create html-footnotes-buffer-name)
+	      (insert (char-to-string current-char)))
+	  (setq new-string (concat new-string (char-to-string current-char))))))
+    (setq index (+ index 1)))
+  (setq line new-string) 
+  (when has-footnote
+    (setq line (html-insert-fnreturn line)))
+  line)
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -370,7 +395,9 @@ title-combined)
 		  ;; Remove location-style-prefix
 		  (setq current-appendix-line (substring current-appendix-line (length location-style-prefix)))
 		  (setq formatted-line (concat html-location-paragraph-prefix current-appendix-line html-paragraph-postfix)))
-	      (setq formatted-line (concat html-normal-paragraph-margin-top-prefix current-appendix-line html-paragraph-postfix))))
+	      (setq formatted-line (apply-bold current-appendix-line))
+	      (setq formatted-line (apply-italics formatted-line))	      
+	      (setq formatted-line (concat html-normal-paragraph-margin-top-prefix formatted-line html-paragraph-postfix))))
 	  (with-current-buffer (get-buffer-create html-buffer-name)
 	    (insert formatted-line)(newline)))
 	(forward-line))
@@ -489,7 +516,7 @@ title-combined)
 		  (setq formatted-line (concat html-legal-notice-first-paragraph-prefix))
 		  (setq is-first-paragraph nil))
 	      (setq formatted-line (concat html-legal-notice-paragraph-prefix)))
-	      (setq is-first-line nil))
+	    (setq is-first-line nil))
 	  (setq formatted-line (concat formatted-line current-impressum-line html-line-break)))
 	(html-insert-line formatted-line)
 	(forward-line))
@@ -506,15 +533,15 @@ title-combined)
 ;;;
 (defun create-cover-page ()
   (when (file-exists-p cover-file-name)
-      (setq target-filename (concat (file-name-as-directory html-directory) cover-file-name))
-  (copy-file cover-file-name target-filename)))
+    (setq target-filename (concat (file-name-as-directory html-directory) cover-file-name))
+    (copy-file cover-file-name target-filename)))
 
 ;;; ---------------------------------------------------------
 ;;;
 (defun create-werbung-page ()
   (when (file-exists-p werbung-file-name)
-      (setq target-filename (concat (file-name-as-directory html-directory) werbung-file-name))
-  (copy-file werbung-file-name target-filename)))
+    (setq target-filename (concat (file-name-as-directory html-directory) werbung-file-name))
+    (copy-file werbung-file-name target-filename)))
 
 ;;; ---------------------------------------------------------
 ;;;
@@ -589,6 +616,11 @@ title-combined)
 		(eq current-style persons-standalone-style))
 	(setq current-line (substring current-line (length persona-style-prefix))))
       (setq current-line (html-apply-italics current-line))
+      (unless (eq current-style heading-style)
+	(unless (eq current-style location-style)
+	  (unless (eq current-style persons-style)
+	    (unless (eq current-style persons-standalone-style)
+	      (setq current-line (html-apply-bold current-line))))))
       (setq current-line (html-apply-footnotes current-line))
       (setq current-line (html-apply-style current-style current-line last-style))
       (html-insert-line current-line)
@@ -605,8 +637,8 @@ title-combined)
   (with-current-buffer (get-buffer-create html-toc-buffer-name)
     ;; Footnotes
     (when (file-exists-p html-footnotes-file-name)
-	(setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"footnotes.html\" style=\"text-decoration: none\">Fußnoten</a></p></li>"))
-	(insert html-toc-entry)(newline))
+      (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"footnotes.html\" style=\"text-decoration: none\">Fußnoten</a></p></li>"))
+      (insert html-toc-entry)(newline))
     ;; Autor
     (setq html-toc-entry (concat "<li><p class=\"toctext\"><a href=\"autor.html\" style=\"text-decoration: none\">Über den Autor</a></p></li>"))
     (insert html-toc-entry)(newline)
@@ -676,7 +708,7 @@ title-combined)
 		  (setq formatted-line (concat html-legal-notice-first-paragraph-prefix))
 		  (setq is-first-paragraph nil))
 	      (setq formatted-line (concat html-legal-notice-paragraph-prefix)))
-	      (setq is-first-line nil))
+	    (setq is-first-line nil))
 	  (setq formatted-line (concat formatted-line current-autor-line html-line-break)))
 	(html-insert-line formatted-line)
 	(forward-line))
