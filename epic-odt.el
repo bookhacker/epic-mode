@@ -12,6 +12,9 @@
 (defconst odt-standard-paragraph-prefix             "<text:p text:style-name=\"w2e_Standard\">")
 (defconst odt-normal-paragraph-prefix               "<text:p text:style-name=\"w2e_Normal\">")
 (defconst odt-normal-paragraph-first-paragraph-prefix "<text:p text:style-name=\"w2e_Normal_FirstParagraph\">")
+(defconst odt-appendix-paragraph-prefix                 "<text:p text:style-name=\"w2e_Appendix\">")
+(defconst odt-appendix-paragraph-first-paragraph-prefix "<text:p text:style-name=\"w2e_Appendix_FirstParagraph\">")
+(defconst odt-appendix-heading-paragraph-prefix     "<text:p text:style-name=\"w2e_Appendix_Heading\">")
 (defconst odt-standard-paragraph-continued-prefix   "<text:p text:style-name=\"w2e_Standard_Unterbrochen\">")
 (defconst odt-insertion-paragraph-prefix            "<text:p text:style-name=\"w2e_Einschub\">")
 (defconst odt-location-paragraph-prefix             "<text:p text:style-name=\"w2e_Schauplatz\">")
@@ -453,6 +456,7 @@
 (defun odt-insert-appendix ()
   "Inserts content of appendix file into html."
   (when (file-exists-p appendix-file-name)
+    (setq is-first-paragraph t)
     (with-current-buffer (get-buffer-create odt-appendix-buffer)
       (find-file appendix-file-name)
       (goto-char 0)
@@ -468,9 +472,21 @@
 		;; remove location-style-prefix
 		(setq current-appendix-line (substring current-appendix-line (length location-style-prefix)))
 		(setq formatted-line (concat odt-location-paragraph-prefix current-appendix-line odt-paragraph-postfix)))
-	    (setq formatted-line (apply-bold current-appendix-line))
-	    (setq formatted-line (apply-italics formatted-line))
-	    (setq formatted-line (concat odt-normal-paragraph-first-paragraph-prefix formatted-line odt-paragraph-postfix))))	
+	    (if (and (string-prefix-p "*" current-appendix-line)
+		     (string-suffix-p "*" current-appendix-line))
+		(progn
+		  (setq is-first-paragraph t)
+		  (setq formatted-line (apply-bold current-appendix-line))
+		  (setq formatted-line (apply-italics formatted-line))
+		  (setq formatted-line (concat odt-appendix-heading-paragraph-prefix formatted-line odt-paragraph-postfix)))
+	      (setq formatted-line (apply-bold current-appendix-line))
+	      (setq formatted-line (apply-italics formatted-line))
+	      (if is-first-paragraph
+		  (progn
+		    (setq formatted-line (concat odt-appendix-paragraph-first-paragraph-prefix formatted-line odt-paragraph-postfix))
+		    (unless (string= current-appendix-line "")
+		      (setq is-first-paragraph nil)))
+		(setq formatted-line (concat odt-appendix-paragraph-prefix formatted-line odt-paragraph-postfix))))))
 	(with-current-buffer (get-buffer-create org-buffer-name)
 	  (insert formatted-line)(newline))
 	(forward-line))
