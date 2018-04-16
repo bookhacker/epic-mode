@@ -359,7 +359,8 @@
 		;; remove location-style-prefix
 		(setq current-personae-line (substring current-personae-line (length location-style-prefix)))
 		(setq formatted-line (concat odt-location-paragraph-prefix current-personae-line odt-paragraph-postfix)))
-	    (setq formatted-line (concat odt-standard-paragraph-prefix current-personae-line odt-paragraph-postfix))))
+	    (setq formatted-line (apply-italics current-personae-line))
+	    (setq formatted-line (concat odt-standard-paragraph-prefix formatted-line odt-paragraph-postfix))))
 	(with-current-buffer (get-buffer-create org-buffer-name)
 	  (insert formatted-line)(newline))
 	;;)
