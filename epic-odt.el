@@ -488,7 +488,8 @@
 		      (setq is-first-paragraph nil)))
 		(setq formatted-line (concat odt-appendix-paragraph-prefix formatted-line odt-paragraph-postfix))))))
 	(with-current-buffer (get-buffer-create org-buffer-name)
-	  (insert formatted-line)(newline))
+	  (unless (string-empty-p current-appendix-line)
+	    (insert formatted-line)(newline)))
 	(forward-line))
       (kill-buffer (current-buffer)))))
 
